@@ -1,0 +1,320 @@
+.nav-bar-value-item {
+    margin-right: 10px;
+}
+
+.appContainer {
+    margin-top: 5rem
+}
+
+.force-show {
+    display: block;
+}
+
+.filter-container { 
+    margin-bottom: 1rem;
+}  
+
+.org-filter {
+    margin-left: 1rem;
+}
+
+.navbar-brand {
+    margin-left: 20px
+}
+
+.general-assembly-box {
+    border-color: #212529;
+    margin-bottom: 2rem;
+}
+
+/* .proposal-box {
+    background-color: rgba(0, 0, 0, 0.03);
+    margin-top: 2rem;
+    border-bottom-left-radius: 0rem;
+    border-bottom-right-radius: 0rem;
+    border-bottom: 0rem;
+} */
+
+/* .attendee-box {
+    background-color: rgba(0, 0, 0, 0.03);    
+
+} */
+
+.inner-card {
+    border-radius: 0rem;
+    border-left-width: 0rem;
+    border-right-width: 0rem;
+    border-bottom-width: 0rem;
+    border-color: #212529;
+}
+
+.inner-card .card-header {
+    border-bottom-width: 0rem;
+}
+
+.last-inner-card .card-header {
+    border-bottom-width: 0rem;
+
+}
+
+.details-btn {
+    margin-top: 0.9rem;
+}
+
+.last-inner-card {
+    border-top-left-radius: 0rem;
+    border-top-right-radius: 0rem;
+    border-left-width: 0rem;
+    border-right-width: 0rem;
+    border-bottom-width: 0rem;
+    border-color: #212529; 
+}
+
+.last-inner-card .card-body {
+    
+    padding-bottom: 2.5rem;
+}
+
+.inner-card .card-body {
+    padding-bottom: 2.5rem
+}
+.proposal-voting {
+    margin-top: 1rem;
+}
+
+.loader-logo svg {
+    width: 36px;
+    height: 29px;
+    margin-top: 5px;
+}
+
+.value-spacer {
+    margin-right: 1rem;
+}
+
+.value-spacer-sm {
+    margin-right: 0.5rem;
+}
+
+.inner-card .card-header {
+    border-top-left-radius: 0rem;
+    border-top-right-radius: 0rem;
+}
+
+.last-inner-card .card-header {
+    border-top-left-radius: 0rem;
+    border-top-right-radius: 0rem;
+}
+
+.general-assembly-header {
+    color: white;
+    background-color: #343a40;
+    border-bottom-width: 0rem;
+    border-top-left-radius: 0.15rem;
+    border-top-right-radius: 0.15rem;
+}
+
+.vote-bar {
+
+    border-radius: 0rem;
+    background-color: rgba(0, 0, 0, 0.03);
+    
+} 
+.proposal-box .card-body {
+    padding-top: 0rem;
+}
+
+.remote-vote-box{
+    padding-bottom: 1rem;
+}
+
+.bg-spacer {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.attendee-list {
+    margin-top: 10px;
+}
+
+.voting-buttons {
+    margin-top: 0.75rem;
+}
+
+.loader-logo .logo-quater {
+    
+    -webkit-animation: sk-stretchdelay 2.8s infinite ease-in-out;
+    animation: sk-stretchdelay 2.8s infinite ease-in-out;
+  }
+
+  .loader-logo .logo-quater .logo-quater-1 {
+    -webkit-animation-delay: 0s;
+    animation-delay: 0s;
+  }
+  
+  .loader-logo .logo-quater .logo-quater-2 {
+    -webkit-animation-delay: 0.7s;
+    animation-delay: 0.7s;
+  }
+  
+  .loader-logo .logo-quater .logo-quater-3 {
+    -webkit-animation-delay: 2.1s;
+    animation-delay: 2.1s;
+  }
+  
+  .loader-logo .logo-quater .logo-quater-4 {
+    -webkit-animation-delay: 1.4s;
+    animation-delay: 1.4s;
+  }
+
+  @-webkit-keyframes sk-stretchdelay {
+    0%, 40%, 100% { fill: white }  
+    20% { fill: #4C71FE }
+  }
+  
+  @keyframes sk-stretchdelay {
+    0%, 40%, 100% { 
+        fill: white
+    }  20% { 
+        fill: #4C71FE
+    }
+  }
+
+.slockit-text {
+    -webkit-animation: text-appear 9s ease-in-out;
+    animation: text-appear 9s ease-in-out;
+    -webkit-animation-delay:  1s;
+    animation-delay: 1s;
+    opacity: 0;
+
+}
+
+@-webkit-keyframes text-appear {
+    20% { opacity: 1 }  
+    90% { opacity: 1 } 
+  }
+  
+@keyframes text-appear  {
+    20% { opacity: 1 }  
+    90% { opacity: 1 } 
+}
+
+.welcome-logo svg {
+
+    margin-top: 100px;
+    width: 180px;
+    height: 141px;
+
+}
+
+.non-animation-container {
+    display: none;
+}
+
+.welcome-logo .logo-quater .logo-quater-1 {
+    -webkit-animation: welcome-appear-1 8s ease-in-out, welcome-delay-1 5s ease-in-out ;
+    animation: welcome-appear-1 8s ease-in-out, welcome-delay-1 5s ease-in-out;
+    -webkit-animation-delay: 0.2s, 2s;
+    animation-delay: 0.2s, 2s;
+}
+
+.welcome-logo .logo-quater .logo-quater-1 {
+    -webkit-animation: welcome-appear-1 8s ease-in-out, welcome-delay-1 5s ease-in-out ;
+    animation: welcome-appear-1 8s ease-in-out, welcome-delay-1 5s ease-in-out;
+    -webkit-animation-delay: 0.2s, 2s;
+    animation-delay: 0.2s, 2s;
+}
+  
+.welcome-logo .logo-quater .logo-quater-2 {
+    -webkit-animation: welcome-appear-2 8s ease-in-out, welcome-delay-2 5s ease-in-out ;
+    animation: welcome-appear-2 8s ease-in-out, welcome-delay-2 5s ease-in-out ;
+    -webkit-animation-delay: 0.6s, 2s;
+    animation-delay: 0.6s, 2s;
+}
+  
+.welcome-logo .logo-quater .logo-quater-3 {
+    -webkit-animation: welcome-appear-3 8s ease-in-out, welcome-delay-3 5s ease-in-out ;
+    animation: welcome-appear-3 8s ease-in-out, welcome-delay-3 5s ease-in-out ;
+    -webkit-animation-delay: 1.4s, 2s;
+    animation-delay: 1.4s, 2s;
+}
+  
+.welcome-logo .logo-quater .logo-quater-4 {
+    -webkit-animation: welcome-appear-4 8s ease-in-out, welcome-delay-4 5s ease-in-out ;
+    animation: welcome-appear-4 8s ease-in-out, welcome-delay-4 5s ease-in-out ;
+    -webkit-animation-delay: 1s, 2s;
+    animation-delay: 1s, 2s;
+}
+
+
+@-webkit-keyframes welcome-appear-1 {
+    0% { fill: #4C71FE }  
+    100% { fill: #4C71FE } 
+  }
+  
+@keyframes welcome-appear-1  {
+    0% { fill: #4C71FE }  
+    100% { fill: #4C71FE } 
+}
+
+  @-webkit-keyframes welcome-appear-2 {
+    0% { fill: #4C71FE }  
+    100% { fill: #4C71FE } 
+  }
+  
+  @keyframes welcome-appear-2  {
+    0% { fill: #4C71FE }  
+    100% { fill: #4C71FE } 
+  }
+
+  @-webkit-keyframes welcome-appear-3 {
+    0% { fill: #4C71FE }  
+    100% { fill: #4C71FE } 
+  }
+  
+  @keyframes welcome-appear-3  {
+    0% { fill: #4C71FE }  
+    100% { fill: #4C71FE } 
+  }
+
+  @-webkit-keyframes welcome-appear-4 {
+    0% { fill: #4C71FE }  
+    100% { fill: #4C71FE } 
+  }
+  
+  @keyframes welcome-appear-4  {
+    0% { fill: #4C71FE }  
+    100% { fill: #4C71FE } 
+  }
+
+  @-webkit-keyframes welcome-delay-1 {
+    40%, 60% {transform: translate(5px, 6px)}
+  }
+  
+  @keyframes welcome-delay-1  {
+    40%, 60% {transform: translate(5px, 6px)}
+  }
+
+  @-webkit-keyframes welcome-delay-2 {
+    40%, 60%  {transform: translate(-5px, 6px)}
+  }
+  
+  @keyframes welcome-delay-2  {
+    40%, 60%  {transform: translate(-5px, 6px)}
+  }
+
+  @-webkit-keyframes welcome-delay-3 {
+    40%, 60%  {transform: translate(5px, -5px)}
+  }
+  
+  @keyframes welcome-delay-3  {
+    40%, 60%  {transform: translate(5px, -5px)}
+  }
+
+  @-webkit-keyframes welcome-delay-4 {
+    40%, 60%  {transform: translate(-5px, -5px)}
+  }
+  
+  @keyframes welcome-delay-4  {
+    40%, 60%  {transform: translate(-5px, -5px)}
+  }
+
