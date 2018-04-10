@@ -14,12 +14,13 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+
 import * as React from 'react'
 
 import { ProducingAsset, User, AssetType, Certificate } from 'ewf-coo'
 import { Web3Service } from '../utils/Web3Service'
 import { OrganizationFilter } from './OrganizationFilter'
-import { BrowserRouter, Route, Link, NavLink } from 'react-router-dom'
+import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom'
 import { Nav } from 'react-bootstrap'
 import FadeIn from 'react-fade-in'
 import { Table } from '../elements/Table/Table'
@@ -35,7 +36,8 @@ export interface ProducingAssetTableProps {
 }
 
 export interface ProducingAssetTableState {
-    enrichedProducingAssetData: EnrichedProducingAssetData[]
+    enrichedProducingAssetData: EnrichedProducingAssetData[],
+    detailViewForAssetId: number
 
 }
 
@@ -54,10 +56,12 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
         super(props)
 
         this.state = {
-            enrichedProducingAssetData: []
+            enrichedProducingAssetData: [],
+            detailViewForAssetId: null
         }
 
         this.switchToOrganization = this.switchToOrganization.bind(this)
+        this.operationClicked = this.operationClicked.bind(this)
 
     }
 
@@ -96,7 +100,17 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
 
     }
 
+    operationClicked(key: string, id: number) {
+        this.setState({
+            detailViewForAssetId: id
+        })
+
+    }
+
     render() {
+        if (this.state.detailViewForAssetId !== null) {
+            return <Redirect push to={'/' + this.props.baseUrl + '/assets/producing_detail_view/' + this.state.detailViewForAssetId} />
+        }
 
         const defaultWidth = 106
         const getKey = TableUtils.getKey
@@ -108,10 +122,10 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
             generateHeader('Owner', 136),
             generateHeader('Town, Country', 136),
             generateHeader('Type', 72),
-            generateHeader('Max Capacity (kWh)', 125.45, true),
+            generateHeader('Nameplate Capacity (kWh)', 125.45, true),
             generateHeader('Sold Tags (kWh)', 135.89, true),
             generateHeader('Tags for Sale (kWh)', 135.89, true),
-            generateHeader('CO2 Reduction (kg/mWh)', 137.39, true),
+            generateHeader('CO2 Reduction (kg/MWh)', 137.39, true),
             generateHeader('Generated Tags (kWh)', 137.39, true, true)
         ]
 
@@ -158,16 +172,21 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                 (producingAsset.city + ', ' + producingAsset.country),
                 AssetType[producingAsset.assetType],
                 (producingAsset.capacityWh / 1000).toFixed(3),
-                generatedKWh.toFixed(3),
-                (generatedKWh - kWhForSale).toFixed(3),
+                (Math.max(0,generatedKWh - kWhForSale)).toFixed(3),
                 kWhForSale.toFixed(3),
-                producingAsset.cO2UsedForCertificate.toFixed(3)
+                
+                producingAsset.cO2UsedForCertificate.toFixed(3),
+                
+                generatedKWh.toFixed(3)
+                
             ])
 
         })
 
+        const operations = ['Show Details']
+
         return <div className='ProductionWrapper'>
-            <Table header={TableHeader} footer={TableFooter} actions={true} data={data} />
+            <Table header={TableHeader} footer={TableFooter} operationClicked={this.operationClicked} actions={true} data={data} operations={operations} />
         </div>
 
     }

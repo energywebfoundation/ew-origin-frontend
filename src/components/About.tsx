@@ -14,6 +14,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+
 import * as React from 'react'
 import { Nav } from 'react-bootstrap'
 import FadeIn from 'react-fade-in'

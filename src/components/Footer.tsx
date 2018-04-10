@@ -14,6 +14,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+
 import * as React from 'react'
 import {
   NavLink,
@@ -40,7 +41,6 @@ interface FooterProps {
 
 export class Footer extends React.Component<FooterProps, {}> {
   render() {
-
 
     return <div className='FooterWrapper'>
       <div className='FooterInfo'>

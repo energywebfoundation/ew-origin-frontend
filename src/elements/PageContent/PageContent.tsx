@@ -22,6 +22,7 @@ export class PageContent extends React.Component<any, {}> {
             <div className='PageButtons'>
               {
                 buttons.map((button, index) => {
+                  
                   return (<PageButton onFilterOrganization={onFilterOrganization} key={index} data={button} />)
                 })
               }

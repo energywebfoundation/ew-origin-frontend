@@ -14,6 +14,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+
 import * as React from 'react'
 
 import { Web3Service } from '../utils/Web3Service'
@@ -21,8 +22,6 @@ import { ProducingAsset, Certificate, Demand, User, EventHandlerManager, Contrac
 import { ProducingAssetTable } from './ProducingAssetTable'
 import { ConsumingAssetTable } from './ConsumingAssetTable'
 import { Certificates } from './Certificates'
-import { ProductionDetail } from './ProductionDetail'
-import { DemandCreation } from './DemandCreation'
 import { BrowserRouter, Route, Link } from 'react-router-dom'
 
 import { Demands } from './Demands'
@@ -48,8 +47,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
 
         this.CertificateTable = this.CertificateTable.bind(this)
         this.DemandTable = this.DemandTable.bind(this)
-        this.ProductionDetail = this.ProductionDetail.bind(this)
-        this.DemandCreation = this.DemandCreation.bind(this)
+
         this.Admin = this.Admin.bind(this)
         this.Asset = this.Asset.bind(this)
     }
@@ -66,7 +64,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         certificateContractEventHandler.onEvent('LogRetireRequest', async (event) =>
             this.props.actions.certificateCreatedOrUpdated(
                 await (new Certificate(parseInt(event.returnValues._certificateId, 10),
-                                       this.props.web3Service.blockchainProperties).syncWithBlockchain()))
+                    this.props.web3Service.blockchainProperties).syncWithBlockchain()))
         )
 
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event) =>
@@ -78,7 +76,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         certificateContractEventHandler.onEvent('LogCertificateOwnerChanged', async (event) =>
             this.props.actions.certificateCreatedOrUpdated(
                 await (new Certificate(parseInt(event.returnValues._certificateId, 10),
-                                       this.props.web3Service.blockchainProperties).syncWithBlockchain()))
+                    this.props.web3Service.blockchainProperties).syncWithBlockchain()))
         )
 
         const demandContractEventHandler = new ContractEventHandler(web3Service.blockchainProperties.demandLogicInstance, currentBlockNumber)
@@ -90,7 +88,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         demandContractEventHandler.onEvent('LogDemandFullyCreated', async (event) =>
             this.props.actions.demandCreatedOrUpdated(
                 await (new Demand(parseInt(event.returnValues._demandId, 10),
-                                  this.props.web3Service.blockchainProperties).syncWithBlockchain())
+                    this.props.web3Service.blockchainProperties).syncWithBlockchain())
             )
         )
 
@@ -103,7 +101,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         assetContractEventHandler.onEvent('LogNewMeterRead', async (event) =>
             this.props.actions.producingAssetCreatedOrUpdated(
                 await (new ProducingAsset(parseInt(event.returnValues._assetId, 10),
-                                          this.props.web3Service.blockchainProperties).syncWithBlockchain())
+                    this.props.web3Service.blockchainProperties).syncWithBlockchain())
             )
 
         )
@@ -111,21 +109,21 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         assetContractEventHandler.onEvent('LogAssetFullyInitialized', async (event) =>
             this.props.actions.producingAssetCreatedOrUpdated(
                 await (new ProducingAsset(parseInt(event.returnValues._assetId, 10),
-                                          this.props.web3Service.blockchainProperties).syncWithBlockchain())
+                    this.props.web3Service.blockchainProperties).syncWithBlockchain())
             )
         )
 
         assetContractEventHandler.onEvent('LogAssetSetActive', async (event) =>
             this.props.actions.producingAssetCreatedOrUpdated(
                 await (new ProducingAsset(parseInt(event.returnValues._assetId, 10),
-                                          this.props.web3Service.blockchainProperties).syncWithBlockchain())
+                    this.props.web3Service.blockchainProperties).syncWithBlockchain())
             )
         )
 
         assetContractEventHandler.onEvent('LogAssetSetInactive', async (event) =>
             this.props.actions.producingAssetCreatedOrUpdated(
                 await (new ProducingAsset(parseInt(event.returnValues._assetId, 10),
-                                          this.props.web3Service.blockchainProperties).syncWithBlockchain())
+                    this.props.web3Service.blockchainProperties).syncWithBlockchain())
             )
         )
 
@@ -209,16 +207,8 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         />
     }
 
-    ProductionDetail(id: string) {
-        const asset = this.props.producingAssets.find((a: ProducingAsset) => a.id === parseInt(id, 10))
 
-        if (!asset) return null
-        return <ProductionDetail web3Service={this.props.web3Service} producingAssets={asset} currentUser={this.props.currentUser} />
-    }
 
-    DemandCreation() {
-        return <DemandCreation web3Service={this.props.web3Service} currentUser={this.props.currentUser} />
-    }
 
     render() {
         if (this.props.web3Service == null) {
@@ -233,10 +223,8 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/admin/'} component={this.Admin} />
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/certificates'} component={this.CertificateTable} />
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/demands'} component={this.DemandTable} />
-                {(this.props as any).match.params.id !== 'all' ?
-                    <Route path={'/' + (this.props as any).match.params.contractAddress + '/assets/*'} component={() => this.ProductionDetail((this.props as any).match.params.id)} /> : null
-                }
-                <Route path={'/' + (this.props as any).match.params.contractAddress + '/demandCreation'} component={this.DemandCreation} />
+          
+
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/legal'} component={Legal} />
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/about'} component={About} />
                 <Route path={'/' + (this.props as any).match.params.contractAddress} component={this.Asset} />

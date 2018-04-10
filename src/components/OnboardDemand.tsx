@@ -14,64 +14,22 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+
 import * as React from 'react'
 import FadeIn from 'react-fade-in'
 import { Web3Service } from '../utils/Web3Service'
 import { Table } from '../elements/Table/Table'
 import { AssetType, Compliance, User, Demand, Currency, TimeFrame } from 'ewf-coo'
 
-const RegionAPI = 'https://restcountries.eu/rest/v2/region/'
-const Regions = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania']
-
-interface OnboardDemandState {
-  region: string,
-  countries: any[]
-}
-
 export interface OnboardDemandProps {
   web3Service: Web3Service,
   currentUser: User
 }
 
-export class OnboardDemand extends React.Component<OnboardDemandProps, OnboardDemandState> {
+export class OnboardDemand extends React.Component<OnboardDemandProps, {}> {
   constructor(props) {
     super(props)
-
-    this.state = {
-      region: 'Europe',
-      countries: []
-    }
-
     this.creatDemand = this.creatDemand.bind(this)
-  }
-
-  componentWillMount() {
-    this.fetchCountriesByRegion()
-  }
-
-  fetchCountriesByRegion() {
-    const { region } = this.state
-    fetch(`${RegionAPI}${region}`).then(response => (response.json()))
-      .then(data => {
-        this.setState({ countries: data })
-      })
-  }
-
-  onChangeRegion(newRegion) {
-    const _ = this
-    this.setState({ region: newRegion }, () => {
-      _.fetchCountriesByRegion()
-    })
-  }
-
-  onChangeEvent(key, val) {
-    switch (key) {
-      case 'region':
-        this.onChangeRegion(val)
-        break
-      default:
-        break
-    }
   }
 
   async creatDemand(input: any) {
@@ -142,6 +100,7 @@ export class OnboardDemand extends React.Component<OnboardDemandProps, OnboardDe
             toggle: { hide: true, description: '' },
             input: { type: 'text' }
           },
+  
           {
             label: 'Timeframe',
             key: 'timeframe',
@@ -162,6 +121,12 @@ export class OnboardDemand extends React.Component<OnboardDemandProps, OnboardDe
             key: 'endTime',
             toggle: { hide: true, description: '' },
             input: { type: 'date' }
+          },
+          {
+            label: 'Total Demand (kWh)',
+            key: 'totalDemand',
+            toggle: { hide: true, description: '' },
+            input: { type: 'text' }
           },
           {
             label: 'Buyer’s Address',
@@ -309,18 +274,15 @@ export class OnboardDemand extends React.Component<OnboardDemandProps, OnboardDe
       }
     ]
 
-    const { countries } = this.state
+
 
     const assetTypes = ['Wind', 'Solar', 'RunRiverHydro', 'BiomassGas']
     const compliances = ['none', 'IREC', 'EEC', 'TIGR']
-    const timeframes = ['yearly', 'monthly', 'daily', 'hourly']
+    const timeframes = ['yearly', 'monthly', 'daily']
 
-    return (
+    return  <div className='OnboardDemandWrapper'>
+              <Table type='admin' header={Tables} data={{  assetTypes, compliances, timeframes }} />
+            </div>
 
-      <div className='OnboardDemandWrapper'>
-        <Table type='admin' header={Tables} data={{ Regions, countries, assetTypes, compliances, timeframes }} />
-      </div>
-
-    )
   }
 }

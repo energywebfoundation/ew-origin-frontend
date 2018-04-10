@@ -14,6 +14,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+
 import * as React from 'react'
 import { ProducingAsset, Certificate, User, AssetType, Compliance, TimeFrame, Currency, Demand } from 'ewf-coo'
 import { Web3Service } from '../utils/Web3Service'
@@ -26,6 +27,7 @@ import { Nav, NavItem } from 'react-bootstrap'
 import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom'
 import { PageContent } from '../elements/PageContent/PageContent'
 import { CertificateTable, SelectedState } from './CertificateTable'
+import { CertificateDetailView } from './CertificateDetailView'
 
 export interface CertificatesProps {
     web3Service: Web3Service,
@@ -45,8 +47,6 @@ export interface CertificatesState {
 
 export class Certificates extends React.Component<CertificatesProps, CertificatesState> {
 
-
-
     constructor(props) {
         super(props)
 
@@ -58,6 +58,10 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
 
         this.switchToOrganization = this.switchToOrganization.bind(this)
         this.onFilterOrganization = this.onFilterOrganization.bind(this)
+        this.CertificateTable = this.CertificateTable.bind(this)
+        this.SoldCertificates = this.SoldCertificates.bind(this)
+        this.ForSaleCertificates = this.ForSaleCertificates.bind(this)
+        this.ClaimedCertificates = this.ClaimedCertificates.bind(this)
 
     }
 
@@ -66,11 +70,6 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
             switchedToOrganization: switchedToOrganization
         })
     }
-
-
-
-
-
 
 
     CertificateTable(key) {
@@ -83,6 +82,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
             selectedState={key}
             switchedToOrganization={this.state.switchedToOrganization}
         />
+
     }
 
     onFilterOrganization(index: number) {
@@ -91,8 +91,31 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
         })
     }
 
+    CertificateDetailView(id: number) {
+        return <CertificateDetailView
+            id={id} baseUrl={this.props.baseUrl}
+            producingAssets={this.props.producingAssets}
+            web3Service={this.props.web3Service}
+            certificates={this.props.certificates}
+        />
+    }
+
+    SoldCertificates() {
+        return this.CertificateTable(SelectedState.Sold)
+    }
+
+    ForSaleCertificates() {
+        return this.CertificateTable(SelectedState.ForSale)
+    
+    }
+
+    ClaimedCertificates() {
+        return this.CertificateTable(SelectedState.Claimed)
+    
+    }
 
     render() {
+
 
         const organizations = this.props.currentUser ?
             ['All Organizations', this.props.currentUser.organization] :
@@ -102,7 +125,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
             {
                 key: 'claims_report',
                 label: 'Claims Report',
-                component: () => this.CertificateTable(SelectedState.Claimed),
+                component: this.ClaimedCertificates,
                 buttons: [
                     {
                         type: 'dropdown',
@@ -114,7 +137,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
             }, {
                 key: 'for_sale',
                 label: 'For Sale',
-                component: () => this.CertificateTable(SelectedState.ForSale),
+                component: this.ForSaleCertificates,
                 buttons: [
                     {
                         type: 'dropdown',
@@ -126,7 +149,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
             }, {
                 key: 'bought_sold',
                 label: 'Bought / Sold',
-                component: () => this.CertificateTable(SelectedState.Sold),
+                component: this.SoldCertificates,
                 buttons: [
                     {
                         type: 'dropdown',
@@ -135,15 +158,20 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                         content: organizations
                     }
                 ]
-            }
+            }, {
+                key: 'detail_view',
+                label: 'Detail View',
+                component: null
+            },
         ]
 
         return <div className='PageWrapper'>
             <div className='PageNav'>
                 <Nav className='NavMenu'>
                     {
-                        CertificatesMenu.map((menu, index) => {
-                            return (<li key={index}><NavLink exact to={`/${this.props.baseUrl}/certificates/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>)
+                        CertificatesMenu.map((menu) => {
+                            
+                            return (<li key={menu.key}><NavLink to={`/${this.props.baseUrl}/certificates/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>)
                         })
 
                     }
@@ -151,12 +179,15 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
             </div>
 
 
-
-            <Route path={'/' + this.props.baseUrl + '/certificates/:key'} render={props => {
+            <Route path={'/' + this.props.baseUrl + '/certificates/:key/:id?'} render={props => {
                 const key = props.match.params.key
+                const id = props.match.params.id
                 const matches = CertificatesMenu.filter(item => {
                     return item.key === key
                 })
+                if (matches.length > 0 && key === 'detail_view') {
+                    matches[0].component = () => this.CertificateDetailView(id ? parseInt(id, 10) : id)
+                } 
                 return (<PageContent onFilterOrganization={this.onFilterOrganization} menu={matches.length > 0 ? matches[0] : null} redirectPath={'/' + this.props.baseUrl + '/certificates'} />)
             }} />
             <Route exact path={'/' + this.props.baseUrl + '/certificates'} render={props => (<Redirect to={{ pathname: `/${this.props.baseUrl}/certificates/${CertificatesMenu[0].key}` }} />)} />

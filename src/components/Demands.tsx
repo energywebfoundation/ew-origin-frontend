@@ -32,144 +32,91 @@ import '../../assets/common.scss'
 
 
 export interface DemandsProps {
-  web3Service: Web3Service,
-  demands: Demand[],
-  producingAssets: ProducingAsset[],
-  consumingAssets: ConsumingAsset[],
-  currentUser: User,
-  baseUrl: string
+    web3Service: Web3Service,
+    demands: Demand[],
+    producingAssets: ProducingAsset[],
+    consumingAssets: ConsumingAsset[],
+    currentUser: User,
+    baseUrl: string
 
 }
 
 export interface DemandState {
 
-  switchedToOrganization: boolean
+    switchedToOrganization: boolean
 
 }
 
 
 export class Demands extends React.Component<DemandsProps, DemandState> {
 
-  constructor(props) {
-    super(props)
+    constructor(props) {
+        super(props)
 
-    this.state = {
+        this.state = {
 
-      switchedToOrganization: false
+            switchedToOrganization: false
+        }
+
+        this.onFilterOrganization = this.onFilterOrganization.bind(this)
+        this.DemandTable = this.DemandTable.bind(this)
+
     }
 
-    this.onFilterOrganization = this.onFilterOrganization.bind(this)
-
-  }
-
-  onFilterOrganization(index: number) {
-    this.setState({
-      switchedToOrganization: index !== 0
-    })
-  }
-
-
-  DemandTable(key) {
-    return <DemandTable
-      web3Service={this.props.web3Service}
-      producingAssets={this.props.producingAssets}
-      currentUser={this.props.currentUser}
-      selected={key}
-      demands={this.props.demands}
-      consumingAssets={this.props.consumingAssets}
-      switchedToOrganization={this.state.switchedToOrganization}
-    />
-  }
-
-
-  render() {
-
-    const organizations = this.props.currentUser ?
-      ['All Organizations', this.props.currentUser.organization] :
-      ['All Organizations']
-
-    const DemandsMenu = [
-      {
-        key: 'buy',
-        label: 'Buy',
-        component: () => this.DemandTable('buy'),
-        buttons: [
-          {
-            type: 'date-range',
-          },
-          {
-            type: 'dropdown',
-            label: 'All Organizations',
-            face: ['filter', 'icon'],
-            content: organizations
-          },
-          {
-            type: 'dropdown',
-            label: 'All Status',
-            face: [],
-            content: [
-              'Open',
-              'Fullfilled',
-              'All',
-            ]
-          },
-        ]
-      }, {
-        key: 'sell',
-        label: 'Sell',
-        component: () => this.DemandTable('sell'),
-        buttons: [
-          {
-            type: 'date-range',
-          },
-          {
-            type: 'dropdown',
-            label: 'All Organizations',
-            face: ['filter', 'icon'],
-            content: organizations
-          },
-          {
-            type: 'dropdown',
-            label: 'All Status',
-            face: [],
-            content: [
-              'Open',
-              'Fullfilled',
-              'All',
-            ]
-          },
-        ]
-      }
-    ]
-
-    return <div className='PageWrapper'>
-      <div className='PageNav'>
-        <Nav className='NavMenu'>
-          {
-            DemandsMenu.map((menu, index) => {
-              return (<li key={menu.key} ><NavLink exact to={`/${this.props.baseUrl}/demands/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>)
-            })
-
-          }
-        </Nav>
-      </div>
-
-
-
-
-
-      <Route path={'/' + this.props.baseUrl + '/demands/:key'} render={props => {
-        const key = props.match.params.key
-        const matches = DemandsMenu.filter(item => {
-          return item.key === key
+    onFilterOrganization(index: number) {
+        this.setState({
+            switchedToOrganization: index !== 0
         })
-        return (<PageContent onFilterOrganization={this.onFilterOrganization} menu={matches.length > 0 ? matches[0] : null} redirectPath={'/' + this.props.baseUrl + '/demands'} />)
-      }} />
-      <Route exact path={'/' + this.props.baseUrl + '/demands'} render={props => (<Redirect to={{ pathname: `/${this.props.baseUrl}/demands/${DemandsMenu[0].key}` }} />)} />
-      <Route exact path={'/' + this.props.baseUrl + '/'} render={props => (<Redirect to={{ pathname: `/${this.props.baseUrl}/demands/${DemandsMenu[0].key}` }} />)} />
+    }
 
-    </div>
 
-  }
+    DemandTable() {
+        return <DemandTable
+            web3Service={this.props.web3Service}
+            producingAssets={this.props.producingAssets}
+            currentUser={this.props.currentUser}
+            demands={this.props.demands}
+            consumingAssets={this.props.consumingAssets}
+            switchedToOrganization={this.state.switchedToOrganization}
+            baseUrl={this.props.baseUrl}
+        />
+    }
+
+
+    render() {
+
+        const organizations = this.props.currentUser ?
+            ['All Organizations', this.props.currentUser.organization] :
+            ['All Organizations']
+
+        const DemandsMenu = {
+            key: 'demands',
+            label: 'Demands',
+            component: this.DemandTable,
+            buttons: [
+                // {
+                //     type: 'date-range',
+                // },
+                {
+                    type: 'dropdown',
+                    label: 'All Organizations',
+                    face: ['filter', 'icon'],
+                    content: organizations
+                }
+            ]
+        }
+
+
+        return <div className='PageWrapper'>
+            <div className='PageNav'>
+                <Nav className='NavMenu'>
+
+                </Nav>
+            </div>
+
+            <PageContent onFilterOrganization={this.onFilterOrganization} menu={DemandsMenu} redirectPath={'/' + this.props.baseUrl + '/demands'} />
+        </div>
+
+    }
 
 }

@@ -51,7 +51,6 @@
     "newline-before-return": false,
     "strict-boolean-expressions": false,
     "react-a11y-anchors": false,
-    "max-line-length": false,
     "react-a11y-role-has-required-aria-props": false,
     "literal-spacing": [
       true,

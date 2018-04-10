@@ -26,7 +26,8 @@ import FadeIn from 'react-fade-in'
 import { ProducingAssetTable } from './ProducingAssetTable'
 import { ConsumingAssetTable } from './ConsumingAssetTable'
 import { PageContent } from '../elements/PageContent/PageContent'
-import { DetailView } from './DetailView'
+import { ProducingAssetDetailView } from './ProducingAssetDetailView'
+import { ConsumingAssetDetailView } from './ConsumingAssetDetailView'
 
 
 export interface AssetProps {
@@ -96,10 +97,20 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         />
     }
 
-    DetailView(id: number) {
-        return <DetailView
+    ProductionDetailView(id: number) {
+        return <ProducingAssetDetailView
             id={id} baseUrl={this.props.baseUrl}
             producingAssets={this.props.producingAssets}
+            web3Service={this.props.web3Service}
+            certificates={this.props.certificates}
+            addSearchField={true}
+        />
+    }
+
+    ConsumingDetailView(id: number) {
+        return <ConsumingAssetDetailView
+            id={id} baseUrl={this.props.baseUrl}
+            consumingAssets={this.props.consumingAssets}
             web3Service={this.props.web3Service}
             certificates={this.props.certificates}
         />
@@ -122,7 +133,7 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         const AssetsMenu = [
             {
                 key: 'production',
-                label: 'Production',
+                label: 'Production List',
                 component: this.ProducingAssetTable,
                 buttons: [
                     {
@@ -134,7 +145,7 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                 ]
             }, {
                 key: 'consumption',
-                label: 'Consumption',
+                label: 'Consumption List',
                 component: this.ConsumingAssetTable,
                 buttons: [
                     {
@@ -145,8 +156,12 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                     }
                 ]
             }, {
-                key: 'detail_view',
-                label: 'Detail View',
+                key: 'producing_detail_view',
+                label: 'Production Detail',
+                component: null
+            }, {
+                key: 'consuming_detail_view',
+                label: 'Consumption Detail',
                 component: null
             }
         ]
@@ -158,9 +173,8 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                 <Nav className='NavMenu'>
                     {
 
-
-                        AssetsMenu.map((menu, index) => {
-                            return (<li key={index}><NavLink exact to={`/${this.props.baseUrl}/assets/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>)
+                        AssetsMenu.map((menu) => {
+                            return (<li key={menu.key}><NavLink  to={`/${this.props.baseUrl}/assets/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>)
                         })
 
                     }
@@ -174,8 +188,10 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                 const matches = AssetsMenu.filter(item => {
                     return item.key === key
                 })
-                if (matches.length > 0 && key === 'detail_view') {
-                    matches[0].component = () => this.DetailView(id ? parseInt(id, 10) : id)
+                if (matches.length > 0 && key === 'producing_detail_view') {
+                    matches[0].component = () => this.ProductionDetailView(id ? parseInt(id, 10) : id)
+                } else if (matches.length > 0 && key === 'consuming_detail_view') {
+                    matches[0].component = () => this.ConsumingDetailView(id ? parseInt(id, 10) : id)
                 }
                 return (<PageContent onFilterOrganization={this.onFilterOrganization} menu={matches.length > 0 ? matches[0] : null} redirectPath={'/' + this.props.baseUrl + '/assets'} />)
             }} />

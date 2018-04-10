@@ -11,6 +11,9 @@ import DatePicker from 'react-date-picker';
 import * as renderHTML  from 'react-render-html'
 import * as moment from 'moment'
 import * as action from '../../../assets/action.svg'
+import { PeriodToSeconds } from '../../components/DemandTable'
+import {TimeFrame } from 'ewf-coo'
+
 import './toggle.scss'
 import './Table.scss'
 import './datepicker.scss'
@@ -35,7 +38,8 @@ export class Table extends React.Component<any, any> {
     this.state = {
       ...toggles,
       inputs: {enabledProperties: [false, false, false, false, false, false, false, false, false, false]},
-      date: new Date(),
+      totalEnergy: 0, 
+      date: new Date()
     }
   }
   calculateTotal = (data, keys) => {
@@ -73,7 +77,7 @@ export class Table extends React.Component<any, any> {
       const newInputs = {...this.state.inputs}
       newInputs[key] = value
 
-      this.setState({ inputs: newInputs })
+      this.setState({ inputs: newInputs }, this.saveTotalEnergy)
     }).bind(this)
   }
 
@@ -89,7 +93,7 @@ export class Table extends React.Component<any, any> {
         const newInputs = {...this.state.inputs}
         newInputs.enabledProperties[index] = !newInputs.enabledProperties[index]
 
-        this.setState({ inputs: newInputs })
+        this.setState({ inputs: newInputs})
       }
       
 
@@ -97,15 +101,19 @@ export class Table extends React.Component<any, any> {
   }
 
   handleInput = (key) => {
+
     return ((e) => {
       const newInputs = {...this.state.inputs}
       newInputs[key] = e.target.value
 
-      this.setState({ inputs: newInputs })
+      this.setState({ 
+        inputs: newInputs
+      }, this.saveTotalEnergy)
     }).bind(this)
   }
 
   handleDate = (key) => {
+
     return ((date) => {
 
       const output = moment(date).format('DD MMM YY')
@@ -113,8 +121,33 @@ export class Table extends React.Component<any, any> {
       const newInputs = {...this.state.inputs}
       newInputs[key] = moment(date).unix()
 
-      this.setState({ inputs: newInputs })
+      this.setState({ 
+        inputs: newInputs
+      }, this.saveTotalEnergy)
     }).bind(this)
+  }
+
+  saveTotalEnergy() {
+    this.setState({ 
+
+      totalEnergy: this.calculateTotalEnergy() 
+    })
+  }
+
+  calculateTotalEnergy(): number {
+
+    if (this.state.inputs.targetWhPerPeriod 
+      && this.state.inputs.timeframe
+      && this.state.inputs.startTime
+      && this.state.inputs.endTime ) {
+    
+        return (Math.ceil((parseInt(this.state.inputs.endTime, 10) - parseInt(this.state.inputs.startTime, 10)) / PeriodToSeconds[TimeFrame[this.state.inputs.timeframe]])) * parseInt(this.state.inputs.targetWhPerPeriod, 10) 
+        
+         
+
+    } else {
+      return 0
+    }
   }
 
   render() {
@@ -132,14 +165,15 @@ export class Table extends React.Component<any, any> {
     const { header, footer, data, actions, actionWidth, classNames, type = 'data' , operations = [], operationClicked = () => {}} = props
     const total = type === 'data' ? this.calculateTotal(data, footer) : 0
 
-
     const popoverFocus = (id: number) => (
       <Popover id="popover-trigger-focus">
         <div className="popover-wrapper">
-          {operations.map((o, index) => <div key={index} onClick={() => operationClicked(o, id)  } className="popover-item">{o}</div>)}
+          {operations.map((o) =>  <div key={o} onClick={() => operationClicked(o, id)  } className="popover-item">{o}</div>)
+        }
         </div>
       </Popover>
     );
+
 
  
     return (
@@ -150,8 +184,9 @@ export class Table extends React.Component<any, any> {
             <thead>
               <tr>
                 {
-                  header.map((item, index) => {
-                    return (<th  style={ item.style || {}} key={index}>{renderHTML(renderText(item.label))}</th>)
+                  header.map((item) => {
+                
+                    return (<th  style={ item.style || {}} key={item.key}>{renderHTML(renderText(item.label))}</th>)
                   })
                 }
                 {actions && <th style={{width: actionWidth || 72.89}} className='Actions' >{renderHTML(renderText('Actions'))}</th>}
@@ -160,8 +195,9 @@ export class Table extends React.Component<any, any> {
             <tfoot>
               <tr>
                 {
-                  footer.map((item, index) => {
-                    return (<td colSpan={item.colspan || 1} className={`Total ${item.hide ? 'Hide' : 'Show'}`} style={item.style || {}} key={index}>{renderHTML(renderText(item.label || total[item.key].toFixed(3)))}</td>)
+                  footer.map((item) => {
+              
+                    return (<td colSpan={item.colspan || 1} className={`Total ${item.hide ? 'Hide' : 'Show'}`} style={item.style || {}} key={item.key}>{renderHTML(renderText(item.label || total[item.key].toFixed(3)))}</td>)
                   })
                 }
                 {actions && <td className='Actions'></td>}
@@ -175,8 +211,9 @@ export class Table extends React.Component<any, any> {
                     <tr key={row[0]}>
                       {
                         header.map((item, colIndex) => {
+                         
                           return (
-                            <td key={colIndex} style={{ ...item.style, ...item.styleBody } || {}} className={`${item.styleBody.opacity ? 'Active' : ''}`}>{renderHTML(renderText(row[colIndex]))}</td>
+                            <td key={item.key} style={{ ...item.style, ...item.styleBody } || {}} className={`${item.styleBody.opacity ? 'Active' : ''}`}>{renderHTML(renderText(row[colIndex]))}</td>
                           )
                         })
                       }
@@ -213,12 +250,13 @@ export class Table extends React.Component<any, any> {
             </thead>
             <tbody>
               {
-                header.map((item, rIndex) => {
+                header.map((item) => {
                   return (
                     item.header
                       ?
-                      <tr key={rIndex} className={`${item.footer ? 'TableFooter' : 'TableHeader'}`}>
+                      <tr key={item.key} className={`${item.footer ? 'TableFooter' : 'TableHeader'}`}>
                         <th colSpan={5} className='Actions'>
+                        
                           {
                             item.footer
                               ?
@@ -229,8 +267,9 @@ export class Table extends React.Component<any, any> {
                         </th>
                       </tr>
                       :
-                      item.data.map((item, index) => (
-                        <tr key={index}>
+                      item.data.map((item) => (
+                        <tr key={item.key}>
+                        
                           <td className='Actions Label'>{renderHTML(renderText(item.label.length ? item.label + ':' : ''))}</td>
                           <td className={`Actions ToggleLabel ${state['toggle_' + item.key] || (item.toggle.ref && state['toggle_' + item.toggle.ref]) ? 'Disabled' : 'Active'}`}>{renderHTML(renderText(item.toggle.hide ? '' : item.toggle.label))}</td>
                           <td className={`Actions Toggle`}>
@@ -248,9 +287,14 @@ export class Table extends React.Component<any, any> {
                           </td>
                           <td className={`Actions ToggleDescription ${state['toggle_' + item.key] || (item.toggle.ref && state['toggle_' + item.toggle.ref]) ? 'Active' : 'Disabled'}`}>{renderHTML(renderText(item.toggle.description.length ? item.toggle.description + ':' : ''))}</td>
                           <td className={`Actions Input`}>
-                            {item.input.type === 'text' &&
+                            {item.input.type === 'text' && item.key !== 'totalDemand'  &&
                               <div>
                                 <input onChange={handleInput(item.key)} />
+                              </div>
+                            }
+                            {item.input.type === 'text' && item.key === 'totalDemand'  &&
+                              <div>
+                                <input value={this.state.totalEnergy} readOnly/>
                               </div>
                             }
                             {item.input.type === 'date' &&

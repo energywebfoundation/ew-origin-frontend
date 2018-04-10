@@ -20,7 +20,7 @@ import * as React from 'react'
 import { ConsumingAsset, User, AssetType, Certificate, Demand, DemandProperties } from 'ewf-coo'
 import { Web3Service } from '../utils/Web3Service'
 import { OrganizationFilter } from './OrganizationFilter'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Route, Link, Redirect } from 'react-router-dom'
 import FadeIn from 'react-fade-in'
 import { Table } from '../elements/Table/Table'
 import TableUtils from '../elements/utils/TableUtils'
@@ -36,7 +36,8 @@ export interface ConsumingAssetTableProps {
 }
 
 export interface ConsumingAssetTableState {
-    enrichedConsumingAssetData: EnrichedConsumingAssetData[]
+    enrichedConsumingAssetData: EnrichedConsumingAssetData[],
+    detailViewForAssetId: number
 
 }
 
@@ -53,10 +54,12 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         super(props)
 
         this.state = {
-            enrichedConsumingAssetData: []
+            enrichedConsumingAssetData: [],
+            detailViewForAssetId: null
         }
 
         this.switchToOrganization = this.switchToOrganization.bind(this)
+        this.operationClicked = this.operationClicked.bind(this)
 
     }
 
@@ -94,8 +97,17 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
 
     }
 
-    render() {
-
+    operationClicked(key: string, id: number) {
+        this.setState({
+            detailViewForAssetId: id
+        })
+    
+      }
+    
+      render() {
+        if (this.state.detailViewForAssetId !== null) {
+            return <Redirect push to={'/' + this.props.baseUrl + '/assets/consuming_detail_view/' + this.state.detailViewForAssetId} />;
+        }
 
         const defaultWidth = 106
         const getKey = TableUtils.getKey
@@ -106,7 +118,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
             generateHeader('#', 145.98),
             generateHeader('Owner'),
             generateHeader('Town, Country'),
-            generateHeader('Max Capacity (kWh)', defaultWidth, true),
+            generateHeader('Nameplate Capacity (kWh)', defaultWidth, true),
             generateHeader('Consumption (kWh)', defaultWidth, true),
 
             generateHeader('Certified (kWh)', defaultWidth, true, true),
@@ -136,7 +148,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         let assets = null
         let total
 
-
+        const operations = ['Show Details']
 
         const data = filteredEnrichedAssetData.map((enrichedConsumingAssetData: EnrichedConsumingAssetData) => {
             const consumingAsset = enrichedConsumingAssetData.consumingAsset
@@ -157,7 +169,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         })
 
         return <div className='ConsumptionWrapper'>
-            <Table header={TableHeader} footer={TableFooter} actions={true} data={data} />
+            <Table header={TableHeader} footer={TableFooter} actions={true} operationClicked={this.operationClicked} data={data} operations={operations} />
         </div>
 
 

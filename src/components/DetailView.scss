@@ -1,4 +1,5 @@
 .PageWrapper {
+  
   .DetailViewWrapper {
     .FindAsset {
       display: flex;
@@ -37,7 +38,7 @@
     }
 
     .PageContentWrapper {
-      padding: 72px 0 0;
+      padding: 15px 0 0;
 
       .PageHeader {
         .PageTitle {
@@ -59,6 +60,27 @@
         padding: 12px 0;
         background: #292929;
         border-radius: 3px;
+
+        .history {
+          margin-left: 26px;
+          margin-top: 15px;
+          .title {
+            font-weight: 300;
+            font-size: 11px;
+            color: #989898;
+            mix-blend-mode: normal;
+            opacity: .7;
+            margin-bottom: 10px;
+            
+          }
+          .timestamp {
+            font-size: 11px;
+          }
+  
+       
+
+        }
+     
 
         table {
           table-layout: fixed;

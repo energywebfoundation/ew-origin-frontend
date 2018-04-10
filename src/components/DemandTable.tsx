@@ -22,6 +22,10 @@ import { OrganizationFilter } from './OrganizationFilter'
 import { Table } from '../elements/Table/Table'
 import TableUtils from '../elements/utils/TableUtils'
 import FadeIn from 'react-fade-in'
+import {
+    NavLink,
+    withRouter
+} from 'react-router-dom'
 
 export interface DemandTableProps {
     web3Service: Web3Service,
@@ -29,8 +33,8 @@ export interface DemandTableProps {
     producingAssets: ProducingAsset[],
     consumingAssets: ConsumingAsset[],
     currentUser: User,
-    selected: string,
-    switchedToOrganization: boolean
+    switchedToOrganization: boolean,
+    baseUrl: string
 
 }
 
@@ -101,9 +105,6 @@ export class DemandTable extends React.Component<DemandTableProps, {}> {
     }
 
     render() {
-
-
-
 
         let total = null
         let totalDemand = 0

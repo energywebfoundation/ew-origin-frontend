@@ -14,20 +14,20 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+
 import * as React from 'react'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps'
-import { ProducingAsset } from 'ewf-coo'
-const demoFancyMapStyles = require('./styleTest.json')
+import { Asset } from 'ewf-coo'
 import { APIKEY } from './GoogleApiKey'
 import './DetailView.scss'
 
 export interface MapDetailProps {
-    producingAssets: ProducingAsset
+    asset: Asset
 }
 
 const MyMapComponent = withScriptjs(withGoogleMap((props: any) =>
     <GoogleMap
-        defaultOptions={{ styles: demoFancyMapStyles }}
+
 
         defaultZoom={13}
         defaultCenter={{ lat: parseFloat(props.asset.gpsLatitude), lng: parseFloat(props.asset.gpsLongitude) }}
@@ -52,7 +52,7 @@ export class MapContainer extends React.Component<MapDetailProps, {}> {
         return (
             <div >
                 <MyMapComponent
-                    asset={this.props.producingAssets}
+                    asset={this.props.asset}
                     googleMapURL={mapURL}
                     loadingElement={<div style={{ height: `100%` }} />}
                     containerElement={<div style={{ height: `250px` }} />}

@@ -14,15 +14,18 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+
 import * as React from 'react'
 import FadeIn from 'react-fade-in'
 
 import * as marker from '../../assets/marker.svg'
 import * as map from '../../assets/map.svg'
-import * as wind from '../../assets/wind.svg'
+import * as wind from '../../assets/icon_wind.svg'
+import * as hydro from '../../assets/icon_hydro.svg'
+import * as solar from '../../assets/icon_solar.svg'
 import * as moment from 'moment'
 import { BrowserRouter, Route, Link } from 'react-router-dom'
-import { ProducingAsset, User, Certificate, AssetType, Compliance } from 'ewf-coo'
+import { ConsumingAsset, User, Certificate, AssetType, Compliance } from 'ewf-coo'
 import { Web3Service } from '../utils/Web3Service'
 import { MapContainer } from './MapContainer'
 
@@ -33,7 +36,7 @@ export interface DetailViewProps {
   id: number,
   baseUrl: string,
   certificates: Certificate[],
-  producingAssets: ProducingAsset[]
+  consumingAssets: ConsumingAsset[]
 }
 
 export interface DetailViewState {
@@ -45,7 +48,7 @@ export interface DetailViewState {
 
 const TableWidth = [210, 210, 210, 210, 407]
 
-export class DetailView extends React.Component<DetailViewProps, DetailViewState> {
+export class ConsumingAssetDetailView extends React.Component<DetailViewProps, DetailViewState> {
   constructor(props) {
     super(props)
     this.state = {
@@ -72,7 +75,7 @@ export class DetailView extends React.Component<DetailViewProps, DetailViewState
   }
 
   async getOwner(props: DetailViewProps) {
-    const selectedAsset = props.producingAssets.find((p: ProducingAsset) => p.id === props.id)
+    const selectedAsset = props.consumingAssets.find((c: ConsumingAsset) => c.id === props.id)
     if (selectedAsset) {
       if (this.props.certificates.length > 0) {
         this.setState({
@@ -93,7 +96,7 @@ export class DetailView extends React.Component<DetailViewProps, DetailViewState
 
   render() {
 
-    const selectedAsset = this.props.producingAssets.find((p: ProducingAsset) => p.id === this.props.id)
+    const selectedAsset = this.props.consumingAssets.find((c: ConsumingAsset) => c.id === this.props.id)
     let data
     if (selectedAsset) {
       data = [
@@ -102,19 +105,12 @@ export class DetailView extends React.Component<DetailViewProps, DetailViewState
             label: 'Owner',
             data: this.state.owner ? this.state.owner.organization : ''
           },
-          {
-            label: 'Certified by Registry',
-            data: Compliance[selectedAsset.complianceRegistry]
-          },
+
           {
             label: 'Kind',
-            data: 'Production'
+            data: 'Consumption'
           },
-          {
-            label: 'Sold Tags',
-            data: selectedAsset.certificatesCreatedForWh,
-            tip: 'kWh'
-          },
+
           {
             label: 'Geo Location',
             data: selectedAsset.gpsLatitude + ', ' + selectedAsset.gpsLongitude,
@@ -125,42 +121,17 @@ export class DetailView extends React.Component<DetailViewProps, DetailViewState
           }
         ],
         [
-          {
-            label: 'Asset Type',
-            data: AssetType[selectedAsset.assetType],
-            image: wind,
-            rowspan: 2
-          },
-          {
-            label: 'Other Green Attributes',
-            data: selectedAsset.otherGreenAttributes
-          },
+
           {
             label: 'Commissioning Date',
             data: moment(selectedAsset.operationalSince * 1000).format('DD MMM YY')
           },
 
+
           {
-            label: 'Tags for Sale',
-            data: this.state.notSoldCertificates,
-            tip: 'kWh'
-          }
-        ],
-        [
-          {
-            label: 'Public Support',
-            data: selectedAsset.typeOfPublicSupport,
-            description: ''
-          },
-          {
-            label: 'Max Capacity',
+            label: 'Nameplate Capacity',
             data: selectedAsset.capacityWh,
             tip: 'kWh'
-          },
-          {
-            label: 'total saved CO2',
-            data: selectedAsset.lastSmartMeterCO2OffsetRead,
-            tip: 'kg'
           }
         ]
       ]
@@ -172,7 +143,7 @@ export class DetailView extends React.Component<DetailViewProps, DetailViewState
         <div className='FindAsset'>
           <input onChange={this.onInputChange} defaultValue={this.props.id || this.props.id === 0 ? this.props.id.toString() : ''} />
 
-          <Link className='btn btn-primary find-asset-button' to={`/${this.props.baseUrl}/assets/detail_view/${this.state.newId}`}>Find Asset</Link>
+          <Link className='btn btn-primary find-asset-button' to={`/${this.props.baseUrl}/assets/consuming_detail_view/${this.state.newId}`}>Find Asset</Link>
 
         </div>
         <div className='PageContentWrapper'>
@@ -184,10 +155,12 @@ export class DetailView extends React.Component<DetailViewProps, DetailViewState
               <div className='text-center'><strong>Asset not found</strong></div> :
               <table >
                 <tbody>
-                  {data.map((row: any, rIndex) => (
-                    <tr key={rIndex} >
-                      {row.map((col, cIndex) => (
-                        <td key={cIndex} rowSpan={col.rowspan || 1} colSpan={col.colspan || 1}>
+                  {data.map((row: any) => (
+                    <tr key={row.key} >
+                    
+                      {row.map((col) => (
+                        <td key={col.key} rowSpan={col.rowspan || 1} colSpan={col.colspan || 1}>
+                        
                           <div className='Label'>{col.label}</div>
                           <div className='Data'>{col.data} {col.tip && (<span>{col.tip}</span>)}</div>
                           {col.image && (
@@ -201,7 +174,7 @@ export class DetailView extends React.Component<DetailViewProps, DetailViewState
                               </div>
                               :
                               <div className={`Image Map`}>
-                                <MapContainer producingAssets={selectedAsset} />
+                                <MapContainer asset={selectedAsset} />
 
                               </div>
                           )}

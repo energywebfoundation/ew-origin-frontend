@@ -23,6 +23,7 @@ export class PageButton extends React.Component<any, any> {
   }
 
   handleDateRange(range) {
+
     this.setState({ itemData: range })
   }
 

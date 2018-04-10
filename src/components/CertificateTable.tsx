@@ -46,7 +46,8 @@ export interface EnrichedCertificateData {
 
 export interface CertificatesState {
     enrichedCertificateData: EnrichedCertificateData[],
-    selectedState: SelectedState
+    selectedState: SelectedState,
+    detailViewForCertificateId: number
 }
 
 export interface EnrichedCertificateData {
@@ -69,13 +70,15 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
 
         this.state = {
             enrichedCertificateData: [],
-            selectedState: SelectedState.Claimed
+            selectedState: SelectedState.Claimed,
+            detailViewForCertificateId: null
         }
 
         this.claimCertificate = this.claimCertificate.bind(this)
         this.operationClicked = this.operationClicked.bind(this)
         this.showTxClaimed = this.showTxClaimed.bind(this)
         this.showCertCreated = this.showCertCreated.bind(this)
+        this.showCertificateDetails = this.showCertificateDetails.bind(this)
     }
 
     async componentDidMount() {
@@ -116,17 +119,26 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
         const certificate = this.props.certificates.find((cert: Certificate) => cert.id === certificateId)
         if (certificate && this.props.currentUser && this.props.currentUser.accountAddress === certificate.owner) {
             const claimedEvent = (await certificate.getCertificateEvents()).find((e) => e.event === 'LogRetireRequest')
-            window.open('https://grid.etherscan.com/tx/' + claimedEvent.transactionHash, claimedEvent.transactionHash)
+            window.open('https://tobalaba.etherscan.com/tx/' + claimedEvent.transactionHash, claimedEvent.transactionHash)
         }
     }
 
     async showCertCreated(certificateId: number) {
         const certificate = this.props.certificates.find((cert: Certificate) => cert.id === certificateId)
         if (certificate && this.props.currentUser && this.props.currentUser.accountAddress === certificate.owner) {
-            console.log(await certificate.getCertificateEvents())
-            console.log(certificate)
+
             const createdEvent = (await certificate.getCertificateEvents()).find((e) => e.event === 'LogCreatedCertificate')
-            window.open('https://grid.etherscan.com/tx/' + createdEvent.transactionHash, createdEvent.transactionHash)
+            window.open('https://tobalaba.etherscan.com/tx/' + createdEvent.transactionHash, createdEvent.transactionHash)
+        }
+    }
+
+    async showInitialLoggingTx(certificateId: number) {
+        const certificate = this.props.certificates.find((cert: Certificate) => cert.id === certificateId)
+        if (certificate && this.props.currentUser && this.props.currentUser.accountAddress === certificate.owner) {
+            const asset = this.props.producingAssets.find((a: ProducingAsset) => a.id === certificate.assetId)
+            const logEvent = (await asset.getEventWithFileHash(certificate.dataLog))[0]
+            console.log(logEvent)
+            window.open('https://tobalaba.etherscan.com/tx/' + logEvent.transactionHash, logEvent.transactionHash)
         }
     }
 
@@ -142,7 +154,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
 
             const creationDemandProperties: FullDemandProperties = {
                 buyer: this.props.currentUser.accountAddress,
-                enabledProperties: [true, true, true, true, true, true, false, false, true, true],
+                enabledProperties: [false, true, true, true, true, true, true, false, true, true],
                 originator: asset.owner,
                 locationCountry: asset.country,
                 locationRegion: asset.region,
@@ -168,6 +180,12 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
 
     }
 
+    showCertificateDetails(certificateId: number) {
+        this.setState({
+            detailViewForCertificateId: certificateId
+        })
+    }
+
     operationClicked(key: string, id: number) {
 
         switch (key) {
@@ -183,6 +201,12 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             case 'Show Certificate Creation Tx':
                 this.showCertCreated(id)
                 break
+            case 'Show Initial Logging Transaction':
+                this.showInitialLoggingTx(id)
+                break
+            case 'Show Certificate Details':
+                this.showCertificateDetails(id)
+                break
             default:
 
         }
@@ -190,6 +214,9 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
     }
 
     render() {
+        if (this.state.detailViewForCertificateId !== null) {
+            return <Redirect push to={'/' + this.props.baseUrl + '/certificates/detail_view/' + this.state.detailViewForCertificateId} />
+        }
 
         const defaultWidth = 106
         const getKey = TableUtils.getKey
@@ -200,7 +227,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 10
+                colspan: 9
             },
             generateFooter('Certified Energy (kWh)', true)
         ]
@@ -237,7 +264,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
                 new Date(enrichedCertificateData.producingAsset.operationalSince * 1000).toDateString(),
                 enrichedCertificateData.producingAsset.gpsLongitude + ' ' + enrichedCertificateData.producingAsset.gpsLatitude,
                 enrichedCertificateData.producingAsset.city + ', ' + enrichedCertificateData.producingAsset.country,
-                enrichedCertificateData.producingAsset.capacityWh / 1000,
+                // enrichedCertificateData.producingAsset.capacityWh / 1000,
                 Compliance[enrichedCertificateData.producingAsset.complianceRegistry],
                 new Date(enrichedCertificateData.certificate.creationTime * 1000).toDateString(),
                 (enrichedCertificateData.certificate.coSaved).toFixed(3),
@@ -253,17 +280,20 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             generateHeader('Commissioning Date'),
             generateHeader('Geo Location'),
             generateHeader('Town, Country'),
-            generateHeader('Max Capacity (kWh)', defaultWidth, true),
+            // generateHeader('Max Capacity (kWh)', defaultWidth, true),
             generateHeader('Compliance'),
             generateHeader('Certification Date'),
             generateHeader('CO2 saved'),
             generateHeader('Certified Energy (kWh)', defaultWidth, true, true)
         ]
 
-        const operations = this.props.selectedState === SelectedState.Sold ?
-            ['Claim'] : this.props.selectedState === SelectedState.ForSale ?
-                ['Buy'] : this.props.selectedState === SelectedState.Claimed ?
-                    ['Show Claiming Tx', 'Show Certificate Creation Tx'] : []
+        const operations = ['Show Certificate Creation Tx', 'Show Initial Logging Transaction', 'Show Certificate Details']
+            .concat(this.props.selectedState === SelectedState.Sold ?
+                ['Claim'] : this.props.selectedState === SelectedState.ForSale ?
+                    ['Buy'] : [])
+        if (this.props.selectedState === SelectedState.Claimed) {
+            operations.concat(['Show Claiming Tx'])
+        }
 
         return <div className='ForSaleWrapper'>
             <Table operationClicked={this.operationClicked} classNames={['bare-font', 'bare-padding']} header={TableHeader} footer={TableFooter} actions={true} data={data} actionWidth={55.39} operations={operations} />

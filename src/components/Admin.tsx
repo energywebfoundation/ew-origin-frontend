@@ -14,6 +14,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+
 import * as React from 'react'
 import { Nav } from 'react-bootstrap'
 import FadeIn from 'react-fade-in'
@@ -29,9 +30,6 @@ import { PageContent } from '../elements/PageContent/PageContent'
 import { OnboardDemand } from './OnboardDemand'
 import { Web3Service } from '../utils/Web3Service'
 import { User } from 'ewf-coo'
-
-
-
 
 export interface AdminProps {
   web3Service: Web3Service,
