@@ -52,7 +52,7 @@ export class OnboardDemand extends React.Component<OnboardDemandProps, {}> {
       currency: Currency.Euro,
       startTime: 0,
       endTime: 2524608000,
-      matcher: '0x343854A430653571B4De6bF2b8C475F828036C30'
+      matcher: '0x585cc5c7829b1fd303ef5c019ed23815a205a59e'
     }
 
     const transformedInput = { ...input }
@@ -100,7 +100,7 @@ export class OnboardDemand extends React.Component<OnboardDemandProps, {}> {
             toggle: { hide: true, description: '' },
             input: { type: 'text' }
           },
-  
+
           {
             label: 'Timeframe',
             key: 'timeframe',
@@ -274,15 +274,13 @@ export class OnboardDemand extends React.Component<OnboardDemandProps, {}> {
       }
     ]
 
-
-
     const assetTypes = ['Wind', 'Solar', 'RunRiverHydro', 'BiomassGas']
     const compliances = ['none', 'IREC', 'EEC', 'TIGR']
     const timeframes = ['yearly', 'monthly', 'daily']
 
-    return  <div className='OnboardDemandWrapper'>
-              <Table type='admin' header={Tables} data={{  assetTypes, compliances, timeframes }} />
-            </div>
+    return <div className='OnboardDemandWrapper'>
+      <Table type='admin' header={Tables} data={{ assetTypes, compliances, timeframes }} />
+    </div>
 
   }
 }
