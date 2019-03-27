@@ -26,6 +26,6 @@ In order to simuate creation of assets, energy and demands run the <code>npm run
 ### starting and accessing the ui
 the ui requires a webserver that can be started with the command <code>npm start</code> on the ui-repository. 
 
-Afterwards the webpage can be accessed with localhost:3000/COO-CONTRACT_ADDRESS/assets/producing where COO-CONTRACT_ADDRESS is the address of the coo-contract (either 0x3f02292B92158CA38fF77E6eE945747daD36921a for tobalaba or the output from your migration file. 
+Afterwards the webpage can be accessed with localhost:3000/COO-CONTRACT_ADDRESS/assets/production where COO-CONTRACT_ADDRESS is the address of the coo-contract (either 0x3f02292B92158CA38fF77E6eE945747daD36921a for tobalaba or the output from your migration file. 
 
 
