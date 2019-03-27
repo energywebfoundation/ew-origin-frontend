@@ -28,6 +28,7 @@ import { ConsumingAssetTable } from './ConsumingAssetTable'
 import { PageContent } from '../elements/PageContent/PageContent'
 import { ProducingAssetDetailView } from './ProducingAssetDetailView'
 import { ConsumingAssetDetailView } from './ConsumingAssetDetailView'
+import { AllAssetsView } from './AllAssetsView';
 
 
 export interface AssetProps {
@@ -61,6 +62,7 @@ export class Asset extends React.Component<AssetProps, AssetState> {
 
         this.switchToOrganization = this.switchToOrganization.bind(this)
         this.ConsumingAssetTable = this.ConsumingAssetTable.bind(this)
+        this.AllAssetsView = this.AllAssetsView.bind(this)
         this.ProducingAssetTable = this.ProducingAssetTable.bind(this)
         this.onFilterOrganization = this.onFilterOrganization.bind(this)
 
@@ -116,8 +118,10 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         />
     }
 
-    AllAssetsView(id: number) {
-        return <h1>Hello World</h1>
+    AllAssetsView() {
+        return <AllAssetsView
+            baseUrl={this.props.baseUrl}
+        />
     }
 
     onFilterOrganization(index: number) {
