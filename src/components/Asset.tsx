@@ -116,6 +116,10 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         />
     }
 
+    AllAssetsView(id: number) {
+        return <h1>Hello World</h1>
+    }
+
     onFilterOrganization(index: number) {
         this.setState({
             switchedToOrganization: index !== 0
@@ -163,6 +167,10 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                 key: 'consuming_detail_view',
                 label: 'Consumption Detail',
                 component: null
+            }, {
+                key: 'all_assets_view',
+                label: 'All Assets',
+                component: this.AllAssetsView
             }
         ]
 
