@@ -10,8 +10,9 @@
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
 import { AppContainer } from './components/AppContainer'
+import { Onboarding } from './components/Onboarding'
 import { Provider } from 'react-redux'
 import { createStore, Reducer } from 'redux'
 import { StoreState } from './types'
@@ -40,8 +41,10 @@ const mapStateToProps = (state) => {
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
-        
-            <Route path='/:contractAddress/' component={connect(mapStateToProps, mapDispatchToProps)(AppContainer)} />
+            <Switch>
+                <Route exact path='/' component={connect(mapStateToProps, mapDispatchToProps)(Onboarding)} />
+                <Route path='/:contractAddress/' component={connect(mapStateToProps, mapDispatchToProps)(AppContainer)} />
+            </Switch>
         </BrowserRouter>
     </Provider>,
     document.getElementById('root')
