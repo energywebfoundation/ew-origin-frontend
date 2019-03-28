@@ -84,7 +84,7 @@ export class Onboarding extends React.Component<any, {}> {
 
   downloadConfiguration() {
     const element = document.createElement("a");
-    const file = new Blob([JSON.stringify(this.state['value'])], {type: 'text/plain'})
+    const file = new Blob([JSON.stringify(this.state['value'], null, 4)], {type: 'text/plain'})
     element.href = URL.createObjectURL(file)
     element.download = "config.json"
     document.body.appendChild(element)
