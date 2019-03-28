@@ -17,6 +17,8 @@
 
 import * as React from 'react'
 
+const Web3 = require('web3')
+
 const localStorageKey = "Onboarding"
 
 export class Onboarding extends React.Component<any, {}> {
@@ -30,7 +32,8 @@ export class Onboarding extends React.Component<any, {}> {
     }
 
     this.state = {
-      value: value
+      value: value,
+      web3: null
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -44,6 +47,44 @@ export class Onboarding extends React.Component<any, {}> {
     localStorage.setItem(localStorageKey, JSON.stringify(this.state['value']))
   }
 
+  async componentDidMount() {
+    await this.showKeyId(this.props)
+
+    window.addEventListener('load', async () => {
+      // Modern dapp browsers...
+      if (window['ethereum']) {
+          const ethereum = window['ethereum']
+          const web3 = new Web3(ethereum)
+          try {
+              // Request account access if needed
+              await ethereum.enable();
+              console.log('Acccounts now exposed')
+              this.state['web3'] = web3
+              this.setState(this.state)
+              console.log(this.state)
+              //web3.eth.sendTransaction({/* ... */});
+          } catch (error) {
+              console.log('User denied account access...')
+          }
+      }
+      else {
+          console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+      }
+    });
+  }
+
+  getSelectedAddress() {
+    try {
+      return this.state['web3'].eth.givenProvider.selectedAddress
+    } catch (error) {
+      return ''
+    }
+  }
+
+  async showKeyId(props) {
+    console.log(props.web3Service)
+  }
+
   render() {
     return (
       <div className='PageWrapper'>
@@ -54,6 +95,9 @@ export class Onboarding extends React.Component<any, {}> {
             <div className='PageTitle'>Onboarding</div>
           </div>
           <div className='PageBody'>
+            <span>
+              Currently selected address: {this.getSelectedAddress()}
+            </span>
             <form>
               <label>
                 Name:
