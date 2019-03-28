@@ -17,7 +17,33 @@
 
 import * as React from 'react'
 
+const localStorageKey = "Onboarding"
+
 export class Onboarding extends React.Component<any, {}> {
+
+  constructor(props) {
+    super(props)
+
+    var value = {'name': 'Your Name', 'coo': 'The CoO Address'}
+    if (localStorage.getItem(localStorageKey)) {
+      value = JSON.parse(localStorage.getItem(localStorageKey))
+    }
+
+    this.state = {
+      value: value
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    const value = event.target.value
+    const name = event.target.name
+    this.state['value'][name] = value
+    this.setState(this.state)
+    localStorage.setItem(localStorageKey, JSON.stringify(this.state['value']))
+  }
+
   render() {
     return (
       <div className='PageWrapper'>
@@ -28,8 +54,18 @@ export class Onboarding extends React.Component<any, {}> {
             <div className='PageTitle'>Onboarding</div>
           </div>
           <div className='PageBody'>
-            Coming Soon...
-            </div>
+            <form>
+              <label>
+                Name:
+                <input type="text" name="name" value={this.state['value']['name']} onChange={this.handleChange} />
+              </label>
+
+              <label>
+                CoO Address:
+                <input type="text" name="coo" value={this.state['value']['coo']} onChange={this.handleChange} />
+              </label>
+            </form>
+          </div>
         </div>
 
       </div>

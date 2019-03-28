@@ -82,7 +82,7 @@ export class AllAssetsView extends React.Component<AllAssetsViewProps, {}> {
                     </ActionBarRow>
         
                 </ActionBar>
-                <Hits hitsPerPage={50} listComponent={AssetHitsTable}/>
+                <Hits mod="sk-hits-list" hitsPerPage={50} listComponent={AssetHitsTable}/>
                 <NoHits />
                 </LayoutResults>
             </LayoutBody>
