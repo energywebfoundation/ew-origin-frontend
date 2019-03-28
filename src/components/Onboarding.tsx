@@ -26,7 +26,7 @@ export class Onboarding extends React.Component<any, {}> {
   constructor(props) {
     super(props)
 
-    var value = {'name': 'Your Name', 'coo': 'The CoO Address'}
+    var value = {'name': 'Your Name', 'coo': 'The CoO Address', 'devices': []}
     if (localStorage.getItem(localStorageKey)) {
       value = JSON.parse(localStorage.getItem(localStorageKey))
     }
@@ -36,15 +36,59 @@ export class Onboarding extends React.Component<any, {}> {
       web3: null
     }
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleDeviceChange = this.handleDeviceChange.bind(this)
+    this.downloadConfiguration = this.downloadConfiguration.bind(this)
+  }
+
+  updateState() {
+    this.setState(this.state)
+    localStorage.setItem(localStorageKey, JSON.stringify(this.state['value']))
   }
 
   handleChange(event) {
     const value = event.target.value
     const name = event.target.name
     this.state['value'][name] = value
-    this.setState(this.state)
-    localStorage.setItem(localStorageKey, JSON.stringify(this.state['value']))
+    this.updateState()
+  }
+
+  handleDeviceChange(event, key) {
+    const value = event.target.value
+    const name = event.target.name
+    this.state['value']['devices'][key][name] = value
+    this.updateState()
+  }
+  
+  handleDeviceDelete(event, key) {
+    this.state['value']['devices'].splice(key, 1)
+    this.updateState()
+    event.preventDefault()
+  }
+
+  handleSubmit(event) {
+    const newDevice = {
+      name: 'MyNewDevice',
+      meta: 'My New Device Meta Data'
+    }
+
+    this.state['value']['devices'].push(newDevice)
+    this.updateState()
+    event.preventDefault()
+  }
+
+  clearLocalStorage(event) {
+    localStorage.clear()
+  }
+
+  downloadConfiguration() {
+    const element = document.createElement("a");
+    const file = new Blob([JSON.stringify(this.state['value'])], {type: 'text/plain'})
+    element.href = URL.createObjectURL(file)
+    element.download = "config.json"
+    document.body.appendChild(element)
+    element.click()
   }
 
   async componentDidMount() {
@@ -85,6 +129,26 @@ export class Onboarding extends React.Component<any, {}> {
     console.log(props.web3Service)
   }
 
+  newDeviceForm() {
+    const devices = this.state['value']['devices'].map((device, key) => (
+      <div key={key}>
+        <label>
+          Device Name:
+          <input type="text" name="key" value={key} disabled />
+          <input type="text" name="name" value={device['name']} onChange={ (e) => this.handleDeviceChange(e, key) } />
+          <input type="text" name="meta" value={device['meta']} onChange={ (e) => this.handleDeviceChange(e, key) } />
+          <input type="submit" value="x" onClick={(e) => this.handleDeviceDelete(e, key)} />
+        </label>
+      </div>
+    ))
+    return (
+      <form>
+        <input type="submit" value="Add device" onClick={this.handleSubmit} />
+        {devices}
+      </form>
+    )
+  }
+
   render() {
     return (
       <div className='PageWrapper'>
@@ -109,6 +173,9 @@ export class Onboarding extends React.Component<any, {}> {
                 <input type="text" name="coo" value={this.state['value']['coo']} onChange={this.handleChange} />
               </label>
             </form>
+            {this.newDeviceForm()}
+            <div onClick={this.clearLocalStorage}><span>Clear local storage</span></div>
+            <div onClick={this.downloadConfiguration}><span>Download</span></div>
           </div>
         </div>
 
