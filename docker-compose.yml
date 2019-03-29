@@ -6,9 +6,7 @@ networks:
 
 services:
 
-  #######################################
   # Postgres: The database used by Kong
-  #######################################
   kong-database:
     image: postgres:9.6
     restart: always
@@ -25,9 +23,7 @@ services:
       timeout: 5s
       retries: 5
 
-  #######################################
   # Kong database migration
-  #######################################
   kong-migration:
     image: kong:latest
     command: "kong migrations bootstrap"
@@ -41,9 +37,7 @@ services:
     depends_on:
       - kong-database
 
-  #######################################
   # Kong: The API Gateway
-  #######################################
   kong:
     image: kong:latest
     restart: always
@@ -67,9 +61,7 @@ services:
       - "8001:8001"
       - "8000:8000"
 
-  #######################################
   # Konga database prepare
-  #######################################
   konga-prepare:
     image: pantsel/konga:next
     command: "-c prepare -a postgres -u postgresql://kong@kong-database:5432/konga_db"
@@ -81,9 +73,7 @@ services:
     depends_on:
       - kong-database
 
-  #######################################
   # Konga: Kong GUI
-  #######################################
   konga:
     image: pantsel/konga:next
     restart: always
@@ -100,3 +90,16 @@ services:
       - kong-database
     ports:
       - "1337:1337"
+
+  # Our Frontend
+  ew-origin-frontend:
+    build: .
+    restart: always
+    networks:
+      - kong-net
+    environment:
+      NODE_ENV: production
+    ports:
+      - "80:80"
+    links:
+      - kong
