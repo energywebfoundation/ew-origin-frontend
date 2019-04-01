@@ -104,6 +104,11 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.7.0
+    environment:
+      - "http.cors.enabled=true"
+      - "http.cors.allow-origin=http://frontend"
+      - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+      - "http.cors.allow-credentials=true"
     restart: always
     networks:
       - kong-net
