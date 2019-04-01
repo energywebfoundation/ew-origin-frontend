@@ -1,5 +1,5 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     entry: "./src/index.tsx",
@@ -26,7 +26,7 @@ module.exports = {
             filename: 'styles.css',
             allChunks: true
         }),
-        new webpack.EnvironmentPlugin(['REACT_APP_KONG_ES_PW'])
+        new Dotenv()
     ],
     module: {
     
