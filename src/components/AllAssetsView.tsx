@@ -1,6 +1,10 @@
 import * as React from 'react'
 import { SearchkitManager, SearchkitProvider, Layout, TopBar, SearchBox, LayoutBody, SideBar, HierarchicalMenuFilter, RefinementListFilter, LayoutResults, ActionBar, ActionBarRow, HitsStats, SelectedFilters, ResetFilters, Hits, NoHits } from 'searchkit'
-const searchkit = new SearchkitManager("http://es-kong/asset")
+
+const espw = "read:" + process.env.REACT_APP_KONG_ES_PW
+const searchkit = new SearchkitManager("http://es-kong/asset", {
+    basicAuth: espw
+})
 
 const HitItem = (props) => (
     <div className='hititem'>
@@ -10,7 +14,6 @@ const HitItem = (props) => (
 
 class AssetHitsTable extends React.Component {
     render() {
-        console.log(this.props)
         return (
             <div style={{width: '100%', boxSizing: 'border-box', padding: 8}}>
             <table className="sk-table sk-table-striped" style={{width: '100%', boxSizing: 'border-box'}}>

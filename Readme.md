@@ -28,4 +28,5 @@ the ui requires a webserver that can be started with the command <code>npm start
 
 Afterwards the webpage can be accessed with localhost:3000/COO-CONTRACT_ADDRESS/assets/producing where COO-CONTRACT_ADDRESS is the address of the coo-contract (either 0x3f02292B92158CA38fF77E6eE945747daD36921a for tobalaba or the output from your migration file. 
 
-
+### Credentials
+An Elasticsearch password used for basic authentication can be defined in an `.env` file. Define the password with the environment variabele REACT_APP_KONG_ES_PW. Set the same password for user `read` in Kong under the appropriate Route and Consumer.

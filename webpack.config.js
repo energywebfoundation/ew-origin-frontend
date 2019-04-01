@@ -1,4 +1,5 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     entry: "./src/index.tsx",
@@ -24,7 +25,8 @@ module.exports = {
         new ExtractTextPlugin({
             filename: 'styles.css',
             allChunks: true
-      })
+        }),
+        new webpack.EnvironmentPlugin(['REACT_APP_KONG_ES_PW'])
     ],
     module: {
     
