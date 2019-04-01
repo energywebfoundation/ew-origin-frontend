@@ -6,6 +6,7 @@ networks:
 
 volumes:
   frontend-es-data:
+  kong-pg-data:
 
 services:
 
@@ -15,6 +16,8 @@ services:
     restart: always
     networks:
       - kong-net
+    volumes:
+      - kong-pg-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: kong
       POSTGRES_DB: kong
