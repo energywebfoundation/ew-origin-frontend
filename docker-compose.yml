@@ -101,3 +101,11 @@ services:
       NODE_ENV: production
     links:
       - kong
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.0
+    restart: always
+    networks:
+      - kong-net
+    links:
+      - ew-origin-frontend

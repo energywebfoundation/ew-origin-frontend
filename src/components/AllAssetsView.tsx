@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { SearchkitManager, SearchkitProvider, Layout, TopBar, SearchBox, LayoutBody, SideBar, HierarchicalMenuFilter, RefinementListFilter, LayoutResults, ActionBar, ActionBarRow, HitsStats, SelectedFilters, ResetFilters, Hits, NoHits } from 'searchkit'
-const searchkit = new SearchkitManager("http://127.0.0.1:9200/asset")
+const searchkit = new SearchkitManager("http://es-kong/asset")
 
 const HitItem = (props) => (
     <div className='hititem'>
