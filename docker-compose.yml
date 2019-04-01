@@ -112,7 +112,9 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.7.0
     environment:
       - "http.cors.enabled=true"
-      - "http.cors.allow-origin=http://frontend"
+# Set multiple allowed hosts, for es this need to be done with a regex
+# In the regex a forward slash needs to be escaped, docker-compose requires the backslash to be escaped with another backslash
+      - "http.cors.allow-origin=/https?:\\/\\/(localhost|frontend)(:[0-9]+)?/"
       - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
       - "http.cors.allow-credentials=true"
     volumes:
