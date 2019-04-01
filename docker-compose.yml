@@ -4,6 +4,9 @@ networks:
  kong-net:
   driver: bridge
 
+volumes:
+  frontend-es-data:
+
 services:
 
   # Postgres: The database used by Kong
@@ -109,6 +112,8 @@ services:
       - "http.cors.allow-origin=http://frontend"
       - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
       - "http.cors.allow-credentials=true"
+    volumes:
+      - frontend-es-data:/usr/share/elasticsearch/data
     restart: always
     networks:
       - kong-net
