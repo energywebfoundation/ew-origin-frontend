@@ -24,7 +24,7 @@ import './index.scss'
 
 
 
-const store = createStore<any>(reducer);
+const store = createStore<any,any,any,any>(reducer);
 
 const mapDispatchToProps = (dispatch) => ({
         actions: bindActionCreators({ certificateCreatedOrUpdated, currentUserUpdated, consumingAssetCreatedOrUpdated, demandCreatedOrUpdated, producingAssetCreatedOrUpdated, web3ServiceUpdated}, dispatch)
