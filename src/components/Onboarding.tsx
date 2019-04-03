@@ -17,8 +17,9 @@
 
 import * as React from 'react'
 
-const Web3 = require('web3')
+import './Onboarding.scss'
 
+const Web3 = require('web3')
 const localStorageKey = "Onboarding"
 
 export class Onboarding extends React.Component<any, {}> {
@@ -26,7 +27,7 @@ export class Onboarding extends React.Component<any, {}> {
   constructor(props) {
     super(props)
 
-    var value = {'name': 'Your Name', 'coo': 'The CoO Address', 'devices': []}
+    var value = {'name': null, 'coo': null, 'devices': []}
     if (localStorage.getItem(localStorageKey)) {
       value = JSON.parse(localStorage.getItem(localStorageKey))
     }
@@ -69,8 +70,8 @@ export class Onboarding extends React.Component<any, {}> {
 
   handleSubmit(event) {
     const newDevice = {
-      name: 'MyNewDevice',
-      meta: 'My New Device Meta Data'
+      name: null,
+      meta: null
     }
 
     this.state['value']['devices'].push(newDevice)
@@ -133,17 +134,21 @@ export class Onboarding extends React.Component<any, {}> {
     const devices = this.state['value']['devices'].map((device, key) => (
       <div key={key}>
         <label>
-          Device Name:
           <input type="text" name="key" value={key} disabled />
-          <input type="text" name="name" value={device['name']} onChange={ (e) => this.handleDeviceChange(e, key) } />
-          <input type="text" name="meta" value={device['meta']} onChange={ (e) => this.handleDeviceChange(e, key) } />
-          <input type="submit" value="x" onClick={(e) => this.handleDeviceDelete(e, key)} />
         </label>
+        <label>
+          Device Name:
+          <input type="text" name="name" value={device['name']} placeholder={"Charging Station " + key} onChange={ (e) => this.handleDeviceChange(e, key) } />
+        </label>
+        <label>
+          Metadata:
+          <input type="text" name="meta" value={device['meta']} placeholder="Rented till..." onChange={ (e) => this.handleDeviceChange(e, key) } />
+        </label>
+        <button className="icon" onClick={(e) => this.handleDeviceDelete(e, key)}><i className="fa fa-trash"></i></button>
       </div>
     ))
     return (
       <form>
-        <input type="submit" value="Add device" onClick={this.handleSubmit} />
         {devices}
       </form>
     )
@@ -159,23 +164,24 @@ export class Onboarding extends React.Component<any, {}> {
             <div className='PageTitle'>Onboarding</div>
           </div>
           <div className='PageBody'>
-            <span>
-              Currently selected address: {this.getSelectedAddress()}
-            </span>
-            <form>
-              <label>
-                Name:
-                <input type="text" name="name" value={this.state['value']['name']} onChange={this.handleChange} />
-              </label>
+            <div className="Onboarding">
+              <div>Currently selected address: {this.getSelectedAddress()}</div>
+              <form>
+                <label>
+                  Name:
+                  <input type="text" name="name" value={this.state['value']['name']} placeholder="Your Name" onChange={this.handleChange} />
+                </label>
 
-              <label>
-                CoO Address:
-                <input type="text" name="coo" value={this.state['value']['coo']} onChange={this.handleChange} />
-              </label>
-            </form>
-            {this.newDeviceForm()}
-            <div onClick={this.clearLocalStorage}><span>Clear local storage</span></div>
-            <div onClick={this.downloadConfiguration}><span>Download</span></div>
+                <label>
+                  CoO Address:
+                  <input type="text" name="coo" value={this.state['value']['coo']} placeholder="0x00..." onChange={this.handleChange} />
+                </label>
+              </form>
+              <button className="primary" onClick={this.handleSubmit}>Add device</button>
+              {this.newDeviceForm()}
+              <button className="secondary" onClick={this.clearLocalStorage}>Clear</button>
+              <button className="primary" onClick={this.downloadConfiguration}>Download</button>
+            </div>
           </div>
         </div>
 
