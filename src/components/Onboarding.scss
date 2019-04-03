@@ -16,11 +16,14 @@ $primary-highlight-color: rgb(0, 138, 218);
               margin-left: .2em;
               margin-right: .5em;
             }
+            input:focus::placeholder {
+              color: transparent;
+            }
             input:focus {
               border-bottom-color: $primary-highlight-color;
             }
             input:disabled {
-              border: none;
+              border-bottom: 1px dotted rgb(201, 201, 201);
             }
           }
         }
