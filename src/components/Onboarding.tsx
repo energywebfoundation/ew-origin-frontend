@@ -36,7 +36,8 @@ export class Onboarding extends React.Component<any, {}> {
       value: value,
       web3: null,
       password: null,
-      account: {}
+      account: {},
+      coo: null
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -122,7 +123,21 @@ export class Onboarding extends React.Component<any, {}> {
   }
 
   deployContract() {
+    event.preventDefault()
     console.log('Deploying CoO contracts, this takes a while.')
+    fetch('http://localhost:3003/coo', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    }).then(res => {
+      res.json().then(data => {
+        this.state['coo'] = data['coo']
+        this.setState(this.state)
+        console.log(this.state)
+      })
+    })
   }
 
   async componentDidMount() {
@@ -189,11 +204,12 @@ export class Onboarding extends React.Component<any, {}> {
 
   render() {
     const coo_length = this.state['value']['coo'].length
-    const account_password = this.state['account']['address']
+    const account_address = this.state['account']['address']
+    const coo_address = this.state['coo']
     var create_account_button_text = 'Create'
     var create_account_button_class = 'primary'
     var create_account_button_disabled = false
-    if (account_password) {
+    if (account_address) {
       create_account_button_text = 'Unlocked'
       create_account_button_class = 'disabled'
       create_account_button_disabled = true
@@ -246,7 +262,7 @@ export class Onboarding extends React.Component<any, {}> {
                   <input type="text" name="password" value={this.state['password']} placeholder={"secret password"} onChange={this.handlePasswordChange} />
                 </label>
                 <button className={create_account_button_class} onClick={this.createAccount} disabled={create_account_button_disabled}>{create_account_button_text}</button>
-                <span>{account_password}</span>
+                <span>{account_address}</span>
               </form>
 
               <div className='PageHeader'>
@@ -255,6 +271,7 @@ export class Onboarding extends React.Component<any, {}> {
 
               <form>
                 <button className="primary" onClick={this.deployContract}>Deploy</button>
+                <span>{coo_address}</span>
               </form>
 
             </div>
