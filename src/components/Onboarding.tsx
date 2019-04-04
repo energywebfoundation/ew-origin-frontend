@@ -23,11 +23,11 @@ const Web3 = require('web3')
 const localStorageKey = "Onboarding"
 
 export class Onboarding extends React.Component<any, {}> {
-
+  
   constructor(props) {
     super(props)
 
-    var value = {'name': null, 'coo': null, 'devices': []}
+    var value = {'name': null, 'coo': null, 'devices': [], 'account': {'address': null}}
     if (localStorage.getItem(localStorageKey)) {
       value = JSON.parse(localStorage.getItem(localStorageKey))
     }
@@ -36,8 +36,7 @@ export class Onboarding extends React.Component<any, {}> {
       value: value,
       web3: null,
       password: null,
-      account: {},
-      coo: null
+      unlocked: false
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -47,6 +46,7 @@ export class Onboarding extends React.Component<any, {}> {
     this.createAccount = this.createAccount.bind(this)
     this.handlePasswordChange = this.handlePasswordChange.bind(this)
     this.deployContract = this.deployContract.bind(this)
+    this.clearLocalStorage = this.clearLocalStorage.bind(this)
   }
 
   updateState() {
@@ -112,18 +112,21 @@ export class Onboarding extends React.Component<any, {}> {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({password: this.state['password']})
+      body: JSON.stringify({acccount: this.state['value']['account']['address'], password: this.state['password']})
     }).then(res => {
       res.json().then(data => {
-        this.state['account'] = data
-        this.setState(this.state)
-        console.log(this.state)
+        this.state['unlocked'] = true
+        this.state['value']['account'] = data
+        this.updateState()
       })
     })
   }
 
   deployContract() {
     event.preventDefault()
+    this.setState({
+      deploy: true
+    })
     console.log('Deploying CoO contracts, this takes a while.')
     fetch('http://localhost:3003/coo', {
       method: 'POST',
@@ -133,9 +136,10 @@ export class Onboarding extends React.Component<any, {}> {
       }
     }).then(res => {
       res.json().then(data => {
-        this.state['coo'] = data['coo']
+        this.state['value']['coo'] = data['coo']
+        this.state['deploy'] = false
         this.setState(this.state)
-        console.log(this.state)
+        this.updateState()
       })
     })
   }
@@ -203,17 +207,40 @@ export class Onboarding extends React.Component<any, {}> {
   }
 
   render() {
-    const coo_length = this.state['value']['coo'].length
-    const account_address = this.state['account']['address']
-    const coo_address = this.state['coo']
+    const coo_length = this.state['value']['coo'] ? this.state['value']['coo'].length : 0
+    const account_address = this.state['value']['account']['address'] ? this.state['value']['account']['address'] : '(Create or unlock an account first)' //this.getSelectedAddress()
+    const coo_address = this.state['value']['coo']
     var create_account_button_text = 'Create'
     var create_account_button_class = 'primary'
     var create_account_button_disabled = false
-    if (account_address) {
-      create_account_button_text = 'Unlocked'
-      create_account_button_class = 'disabled'
-      create_account_button_disabled = true
+    if (this.state['value']['account']['address']) {
+      if (this.state['unlocked']) {
+        create_account_button_disabled = true
+        create_account_button_text = 'Unlocked'
+        create_account_button_class = 'disabled'
+      } else {
+        create_account_button_text = 'Unlock'
+        create_account_button_class = 'secondary'
+      }
     }
+
+    var deploy_button_text = 'Deploy'
+    var deploy_button_class = 'primary'
+    var deploy_button_disabled = false
+
+    if (coo_address) {
+      deploy_button_text = 'Deployed'
+      var deploy_button_class = 'disabled'
+      var deploy_button_disabled = true
+    }
+
+    if (this.state['deploy']) {
+      deploy_button_text = 'Deploying..'
+      var deploy_button_class = 'disabled'
+      var deploy_button_disabled = true
+    }
+
+
     return (
       <div className='PageWrapper'>
         <div className='PageNav'></div>
@@ -224,7 +251,7 @@ export class Onboarding extends React.Component<any, {}> {
           </div>
           <div className='PageBody'>
             <div className="Onboarding">
-              <div>Currently selected address: {this.getSelectedAddress()}</div>
+              <div>Currently selected address: {account_address}</div>
               <form>
                 <label>
                   Name:
@@ -270,7 +297,7 @@ export class Onboarding extends React.Component<any, {}> {
               </div>
 
               <form>
-                <button className="primary" onClick={this.deployContract}>Deploy</button>
+                <button className={deploy_button_class} onClick={this.deployContract} disabled={deploy_button_disabled}>{deploy_button_text}</button>
                 <span>{coo_address}</span>
               </form>
 
