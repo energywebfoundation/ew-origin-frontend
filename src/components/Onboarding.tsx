@@ -34,13 +34,18 @@ export class Onboarding extends React.Component<any, {}> {
 
     this.state = {
       value: value,
-      web3: null
+      web3: null,
+      password: null,
+      account: {}
     }
 
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleDeviceChange = this.handleDeviceChange.bind(this)
     this.downloadConfiguration = this.downloadConfiguration.bind(this)
+    this.createAccount = this.createAccount.bind(this)
+    this.handlePasswordChange = this.handlePasswordChange.bind(this)
+    this.deployContract = this.deployContract.bind(this)
   }
 
   updateState() {
@@ -90,6 +95,34 @@ export class Onboarding extends React.Component<any, {}> {
     element.download = "config.json"
     document.body.appendChild(element)
     element.click()
+  }
+
+  handlePasswordChange(event) {
+    const value = event.target.value
+    this.state['password'] = value
+  }
+
+  createAccount(event) {
+    event.preventDefault()
+    console.log('creating account on the server with password', this.state['password'])
+    fetch('http://localhost:3003/account', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({password: this.state['password']})
+    }).then(res => {
+      res.json().then(data => {
+        this.state['account'] = data
+        this.setState(this.state)
+        console.log(this.state)
+      })
+    })
+  }
+
+  deployContract() {
+    console.log('Deploying CoO contracts, this takes a while.')
   }
 
   async componentDidMount() {
@@ -155,6 +188,16 @@ export class Onboarding extends React.Component<any, {}> {
   }
 
   render() {
+    const coo_length = this.state['value']['coo'].length
+    const account_password = this.state['account']['address']
+    var create_account_button_text = 'Create'
+    var create_account_button_class = 'primary'
+    var create_account_button_disabled = false
+    if (account_password) {
+      create_account_button_text = 'Unlocked'
+      create_account_button_class = 'disabled'
+      create_account_button_disabled = true
+    }
     return (
       <div className='PageWrapper'>
         <div className='PageNav'></div>
@@ -174,13 +217,46 @@ export class Onboarding extends React.Component<any, {}> {
 
                 <label>
                   CoO Address:
-                  <input type="text" name="coo" value={this.state['value']['coo']} placeholder="0x00..." onChange={this.handleChange} />
+                  <input type="text" name="coo" size={42} value={this.state['value']['coo']} placeholder="0x00..." onChange={this.handleChange} />
+                  {
+                    coo_length == 42
+                    ?
+                      <a href={this.state['value']['coo']}>Open</a>
+                    :
+                      <span>0x + 40 characters</span>
+                  }
                 </label>
               </form>
               <button className="primary" onClick={this.handleSubmit}>Add device</button>
+
+              <div className='PageHeader'>
+                <div className='PageTitle'>Device Configurator</div>
+              </div>
               {this.newDeviceForm()}
               <button className="secondary" onClick={this.clearLocalStorage}>Clear</button>
               <button className="primary" onClick={this.downloadConfiguration}>Download</button>
+
+              <div className='PageHeader'>
+                <div className='PageTitle'>CoO Account</div>
+              </div>
+
+              <form>
+                <label>
+                  Account Password:
+                  <input type="text" name="password" value={this.state['password']} placeholder={"secret password"} onChange={this.handlePasswordChange} />
+                </label>
+                <button className={create_account_button_class} onClick={this.createAccount} disabled={create_account_button_disabled}>{create_account_button_text}</button>
+                <span>{account_password}</span>
+              </form>
+
+              <div className='PageHeader'>
+                <div className='PageTitle'>CoO Contracts</div>
+              </div>
+
+              <form>
+                <button className="primary" onClick={this.deployContract}>Deploy</button>
+              </form>
+
             </div>
           </div>
         </div>
