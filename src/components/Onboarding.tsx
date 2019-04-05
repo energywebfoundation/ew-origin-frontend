@@ -16,6 +16,9 @@
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
 import * as React from 'react'
+import * as logo from '../../assets/logo.svg'
+import { Header } from './Header'
+import { User } from 'ewf-coo'
 
 import './Onboarding.scss'
 
@@ -240,9 +243,11 @@ export class Onboarding extends React.Component<any, {}> {
       var deploy_button_disabled = true
     }
 
+    var user: User
 
     return (
       <div className='PageWrapper'>
+        <Header currentUser={user} baseUrl='/' />
         <div className='PageNav'></div>
 
         <div className='PageContentWrapper'>
