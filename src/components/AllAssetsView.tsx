@@ -19,16 +19,16 @@ class AssetHitsTable extends React.Component {
             <table className="sk-table sk-table-striped" style={{width: '100%', boxSizing: 'border-box'}}>
                 <thead>
                 <tr>
-                    <th>Serial Number</th>
-                    <th>Metadata</th>
+                    <th>Meter Serial Number</th>
+                    <th>Last Seen</th>
                 </tr>
                 </thead>
                 <tbody>
                 {
                     this.props['hits'].map((hit) =>
                     <tr key={hit._id}>
-                        <td>{hit._source.serial_number}</td>
-                        <td>{hit._source.metadata}</td>
+                        <td>{hit._source.metadata.meterSerialNumber}</td>
+                        <td>{hit._source.last_seen}</td>
                     </tr>
                     )
                 }
@@ -69,7 +69,7 @@ export class AllAssetsView extends React.Component<AllAssetsViewProps, {}> {
                 <SearchBox
                 autofocus={true}
                 searchOnChange={true}
-                queryFields={['serial_number', 'metadata']} />
+                queryFields={['serial_number', 'last_seen']} />
             </TopBar>
             <LayoutBody>
                 <LayoutResults>
