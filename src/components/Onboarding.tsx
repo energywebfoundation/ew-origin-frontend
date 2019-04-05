@@ -286,7 +286,7 @@ export class Onboarding extends React.Component<any, {}> {
               <form>
                 <label>
                   Account Password:
-                  <input type="text" name="password" value={this.state['password']} placeholder={"secret password"} onChange={this.handlePasswordChange} />
+                  <input type="password" name="password" value={this.state['password']} placeholder={"secret password"} onChange={this.handlePasswordChange} />
                 </label>
                 <button className={create_account_button_class} onClick={this.createAccount} disabled={create_account_button_disabled}>{create_account_button_text}</button>
                 <span>{account_address}</span>
