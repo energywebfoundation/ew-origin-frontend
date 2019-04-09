@@ -36,9 +36,18 @@ $primary-highlight-color: rgb(119, 77, 161);
           margin: 0 1em 0 0;
           width: 10em;
         }
+        button.right {
+          float: right;
+        }
+        button:hover {
+          cursor: pointer;
+        }
         button.primary {
           background-color: $primary-highlight-color;
           color: #fff;
+        }
+        button.disabled:hover {
+          cursor: default;
         }
         button.secondary {
           background-color: #fff;

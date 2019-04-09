@@ -90,6 +90,7 @@ export class Onboarding extends React.Component<any, {}> {
 
   clearLocalStorage(event) {
     localStorage.clear()
+    document.location.reload()
   }
 
   downloadConfiguration() {
@@ -189,11 +190,15 @@ export class Onboarding extends React.Component<any, {}> {
     const devices = this.state['value']['devices'].map((device, key) => (
       <div key={key}>
         <label>
-          <input type="text" name="key" value={key} disabled />
+          <input type="text" name="key" size={1} value={key} disabled />
         </label>
         <label>
           Device Name:
           <input type="text" name="name" value={device['name']} placeholder={"Charging Station " + key} onChange={ (e) => this.handleDeviceChange(e, key) } />
+        </label>
+        <label>
+          Host:
+          <input type="text" name="host" value={device['host']} placeholder="ip:port" onChange={ (e) => this.handleDeviceChange(e, key) } />
         </label>
         <label>
           Metadata:
@@ -245,6 +250,8 @@ export class Onboarding extends React.Component<any, {}> {
 
     var user: User
 
+    const number_of_devices = this.state['value']['devices'].length
+
     return (
       <div className='PageWrapper'>
         <Header currentUser={user} baseUrl='/' />
@@ -275,14 +282,18 @@ export class Onboarding extends React.Component<any, {}> {
                   }
                 </label>
               </form>
-              <button className="primary" onClick={this.handleSubmit}>Add device</button>
 
               <div className='PageHeader'>
                 <div className='PageTitle'>Device Configurator</div>
               </div>
               {this.newDeviceForm()}
-              <button className="secondary" onClick={this.clearLocalStorage}>Clear</button>
-              <button className="primary" onClick={this.downloadConfiguration}>Download</button>
+              <button className="primary" onClick={this.handleSubmit}>Add device</button>
+              {
+                number_of_devices > 0 ?
+                  <button className="primary right" onClick={this.downloadConfiguration}>Download</button>
+                :
+                  null
+              }
 
               <div className='PageHeader'>
                 <div className='PageTitle'>CoO Account</div>
@@ -305,6 +316,12 @@ export class Onboarding extends React.Component<any, {}> {
                 <button className={deploy_button_class} onClick={this.deployContract} disabled={deploy_button_disabled}>{deploy_button_text}</button>
                 <span>{coo_address}</span>
               </form>
+
+              <div className='PageHeader'>
+                <div className='PageTitle'>Dev</div>
+              </div>
+
+              <button className="secondary" onClick={this.clearLocalStorage}>Reset</button>
 
             </div>
           </div>
