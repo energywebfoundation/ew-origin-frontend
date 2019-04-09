@@ -30,3 +30,8 @@ Afterwards the webpage can be accessed with localhost:3000/COO-CONTRACT_ADDRESS/
 
 ### Credentials
 An Elasticsearch password used for basic authentication can be defined in an `.env` file. Define the password with the environment variabele REACT_APP_KONG_ES_PW. Set the same password for user `read` in Kong under the appropriate Route and Consumer.
+
+## Docker
+
+### ew-origin
+In order to build the Docker container and run it, the ew-origin repository needs be next to ew-origin-frontend. (`../ew-origin` from this location)
