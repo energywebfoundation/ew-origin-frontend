@@ -34,4 +34,7 @@ An Elasticsearch password used for basic authentication can be defined in an `.e
 ## Docker
 
 ### ew-origin
-In order to build the Docker container and run it, the ew-origin repository needs be next to ew-origin-frontend. (`../ew-origin` from this location)
+In order to build the Docker container and run it, the ew-origin repository needs be next to ew-origin-frontend. (`../ew-origin` from this location).
+
+### compose
+Run `docker-compose up` to pull and build all necessary images. The compose file includes kong, and konga to configure the routes.
