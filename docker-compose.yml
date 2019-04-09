@@ -97,6 +97,18 @@ services:
     ports:
       - "1337:1337"
 
+  blockchain:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - 8545:8545
+    entrypoint:
+      - 'node'
+      - '/app/ganache-core.docker.cli.js'
+      - '-g 0'
+      - '-l 80000000'
+      - '-e 1000000'
+      - '-a 20'
+
   # Our Frontend
   ew-origin-frontend:
     build: .
@@ -125,14 +137,13 @@ services:
     links:
       - ew-origin-frontend
 
-  ganache:
-    image: trufflesuite/ganache-cli:latest
+  # API Server backend
+  ew-origin:
+    build: ../ew-origin
+    restart: always
+    environment:
+      NODE_ENV: production
     ports:
-      - 8545:8545
-    entrypoint:
-      - 'node'
-      - '/app/ganache-core.docker.cli.js'
-      - '-g 0'
-      - '-l 80000000'
-      - '-e 1000000'
-      - '-a 20'
+      - 3003:3003
+    links:
+      - blockchain
