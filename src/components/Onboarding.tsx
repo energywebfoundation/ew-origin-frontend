@@ -16,8 +16,8 @@
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
 import * as React from 'react'
-import * as logo from '../../assets/logo.svg'
 import { Header } from './Header'
+import { ConfigCreator } from './ConfigCreator'
 import { User } from 'ewf-coo'
 
 import './Onboarding.scss'
@@ -44,8 +44,6 @@ export class Onboarding extends React.Component<any, {}> {
 
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleDeviceChange = this.handleDeviceChange.bind(this)
-    this.downloadConfiguration = this.downloadConfiguration.bind(this)
     this.createAccount = this.createAccount.bind(this)
     this.handlePasswordChange = this.handlePasswordChange.bind(this)
     this.deployContract = this.deployContract.bind(this)
@@ -64,19 +62,6 @@ export class Onboarding extends React.Component<any, {}> {
     this.updateState()
   }
 
-  handleDeviceChange(event, key) {
-    const value = event.target.value
-    const name = event.target.name
-    this.state['value']['devices'][key][name] = value
-    this.updateState()
-  }
-  
-  handleDeviceDelete(event, key) {
-    this.state['value']['devices'].splice(key, 1)
-    this.updateState()
-    event.preventDefault()
-  }
-
   handleSubmit(event) {
     const newDevice = {
       name: null,
@@ -91,15 +76,6 @@ export class Onboarding extends React.Component<any, {}> {
   clearLocalStorage(event) {
     localStorage.clear()
     document.location.reload()
-  }
-
-  downloadConfiguration() {
-    const element = document.createElement("a");
-    const file = new Blob([JSON.stringify(this.state['value'], null, 4)], {type: 'text/plain'})
-    element.href = URL.createObjectURL(file)
-    element.download = "config.json"
-    document.body.appendChild(element)
-    element.click()
   }
 
   handlePasswordChange(event) {
@@ -186,34 +162,6 @@ export class Onboarding extends React.Component<any, {}> {
     console.log(props.web3Service)
   }
 
-  newDeviceForm() {
-    const devices = this.state['value']['devices'].map((device, key) => (
-      <div key={key}>
-        <label>
-          <input type="text" name="key" size={1} value={key} disabled />
-        </label>
-        <label>
-          Device Name:
-          <input type="text" name="name" value={device['name']} placeholder={"Charging Station " + key} onChange={ (e) => this.handleDeviceChange(e, key) } />
-        </label>
-        <label>
-          Host:
-          <input type="text" name="host" value={device['host']} placeholder="ip:port" onChange={ (e) => this.handleDeviceChange(e, key) } />
-        </label>
-        <label>
-          Metadata:
-          <input type="text" name="meta" value={device['meta']} placeholder="Rented till..." onChange={ (e) => this.handleDeviceChange(e, key) } />
-        </label>
-        <button className="icon" onClick={(e) => this.handleDeviceDelete(e, key)}><i className="fa fa-trash"></i></button>
-      </div>
-    ))
-    return (
-      <form>
-        {devices}
-      </form>
-    )
-  }
-
   render() {
     const coo_length = this.state['value']['coo'] ? this.state['value']['coo'].length : 0
     const account_address = this.state['value']['account']['address'] ? this.state['value']['account']['address'] : '(Create or unlock an account first)' //this.getSelectedAddress()
@@ -250,8 +198,6 @@ export class Onboarding extends React.Component<any, {}> {
 
     var user: User
 
-    const number_of_devices = this.state['value']['devices'].length
-
     return (
       <div className='PageWrapper'>
         <Header currentUser={user} baseUrl='/' />
@@ -283,17 +229,7 @@ export class Onboarding extends React.Component<any, {}> {
                 </label>
               </form>
 
-              <div className='PageHeader'>
-                <div className='PageTitle'>Device Configurator</div>
-              </div>
-              {this.newDeviceForm()}
-              <button className="primary" onClick={this.handleSubmit}>Add device</button>
-              {
-                number_of_devices > 0 ?
-                  <button className="primary right" onClick={this.downloadConfiguration}>Download</button>
-                :
-                  null
-              }
+              <ConfigCreator />
 
               <div className='PageHeader'>
                 <div className='PageTitle'>CoO Account</div>
