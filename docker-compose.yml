@@ -139,7 +139,7 @@ services:
 
   # API Server backend
   ew-origin:
-    build: ../ew-origin
+    build: ../ew-helper-demo
     restart: always
     environment:
       NODE_ENV: production
