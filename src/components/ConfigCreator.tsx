@@ -133,7 +133,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
     }
     
     handleSubmit(event) {
-        event.preventDefault();
+        event.preventDefault()
         const type = this.state['value']
         if (['topAdminPrivateKey', 'matcherPrivateKey'].includes(type)) {
             const { address: address, privateKey: privateKey } = this.getNewWeb3Account()
@@ -162,6 +162,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
     }
 
     handleDeviceDelete(event, key) {
+        event.preventDefault()
         this.state['config']['flow'].splice(key, 1)
         this.setState(this.state)
     }
@@ -207,7 +208,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
     renderCreation() {
         return (
             <div>
-                <form onSubmit={this.handleSubmit}>
+                <form>
                 <label>
                 Choose type to create:
                 <select value={this.state['value']} onChange={this.handleChange}>
@@ -218,7 +219,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
                     {/*<option value="CREATE_CONSUMING_ASSET">Consuming Asset</option>*/}
                 </select>
                 </label>
-                <input type="submit" value="Create" />
+                <button className="primary" onClick={this.handleSubmit}>Create</button>
                 {this.renderForms()}
                 </form>
                 <button className="primary" onClick={this.downloadEWFConfiguration}>Download</button>
