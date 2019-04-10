@@ -52,6 +52,13 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
 
     deployEWFConfiguration() {
         event.preventDefault()
+        if (this.state['deploying']) {
+            console.log('Already deploying..')
+            return
+        }
+        this.setState({
+            deploying: true
+        })
         console.log('Deploying CoO contracts, this takes a while.')
         fetch('http://localhost:3003/coo', {
             method: 'POST',
@@ -62,6 +69,9 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
             body: JSON.stringify({config: this.state['config']})
         }).then(res => {
             res.json().then(data => {
+                this.setState({
+                    deploying: false
+                })
                 this.props.callbackSetCooAddress(data['coo'])
             })
         })
@@ -236,6 +246,8 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
     }
 
     renderCreation() {
+        const deploy_button_text = this.state['deploying'] ? 'Deploying..' : 'Deploy'
+        const deploy_button_class = this.state['deploying'] ? 'disabled' : 'primary'
         return (
             <div>
                 <form>
@@ -253,7 +265,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
                 {this.renderForms()}
                 </form>
                 <button className="secondary" onClick={this.downloadEWFConfiguration}>Download</button>
-                <button className="primary" onClick={this.deployEWFConfiguration}>Deploy</button>
+                <button className={deploy_button_class} onClick={this.deployEWFConfiguration}>{deploy_button_text}</button>
             </div>
         )
     }
