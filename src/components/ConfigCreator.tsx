@@ -1,5 +1,5 @@
 import * as React from 'react'
-const Web3 = require('web3')
+const localStorageKey = "ConfigCreator"
 
 
 export interface ConfigCreatorProps {
@@ -14,14 +14,18 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
     constructor(props) {
         super(props)
 
-        this.state = {
-            value: 'CREATE_ACCOUNT',
-            coo: null,
-            config: {
+        const config = localStorage.getItem(localStorageKey) ?
+            JSON.parse(localStorage.getItem(localStorageKey)) :
+            ({
                 topAdminPrivateKey: null,
                 matcherPrivateKey: null,
                 flow: []
-            }
+            })
+
+        this.state = {
+            value: 'CREATE_ACCOUNT',
+            coo: null,
+            config: config
         }
 
         this.downloadEWFConfiguration = this.downloadEWFConfiguration.bind(this)
@@ -30,6 +34,11 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         this.handleSubmit = this.handleSubmit.bind(this)
         this.renderForms = this.renderForms.bind(this)
         this.handleDeviceChange = this.handleDeviceChange.bind(this)
+    }
+
+    updateState() {
+        this.setState(this.state)
+        localStorage.setItem(localStorageKey, JSON.stringify(this.state['config']))
     }
 
     downloadEWFConfiguration() {
@@ -43,9 +52,6 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
 
     deployEWFConfiguration() {
         event.preventDefault()
-        this.setState({
-            deploy: true
-        })
         console.log('Deploying CoO contracts, this takes a while.')
         fetch('http://localhost:3003/coo', {
             method: 'POST',
@@ -168,27 +174,27 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
                 data: this.getDataForType(type)
             })
         }
-        this.setState(this.state)
+        this.updateState()
     }
 
     handleDeviceChange(event, key) {
         const value = event.target.value
         const name = event.target.name
         this.state['config']['flow'][key]['data'][name] = value
-        this.setState(this.state)
+        this.updateState()
     }
 
     handleAccountChange(event) {
         const value = event.target.value
         const name = event.target.name
         this.state['config'][name] = value
-        this.setState(this.state)
+        this.updateState()
     }
 
     handleDeviceDelete(event, key) {
         event.preventDefault()
         this.state['config']['flow'].splice(key, 1)
-        this.setState(this.state)
+        this.updateState()
     }
 
     capitalize(string) {

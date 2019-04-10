@@ -30,17 +30,9 @@ export class Onboarding extends React.Component<any, {}> {
   constructor(props) {
     super(props)
 
-    var value = {'name': null, 'coo': null, 'devices': [], 'account': {'address': null}}
-    if (localStorage.getItem(localStorageKey)) {
-      value = JSON.parse(localStorage.getItem(localStorageKey))
-    }
-
     this.state = {
-      value: value,
       web3: null,
-      password: null,
-      unlocked: false,
-      coo: null
+      coo: JSON.parse(localStorage.getItem(localStorageKey))
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -52,13 +44,13 @@ export class Onboarding extends React.Component<any, {}> {
 
   updateState() {
     this.setState(this.state)
-    localStorage.setItem(localStorageKey, JSON.stringify(this.state['value']))
+    localStorage.setItem(localStorageKey, JSON.stringify(this.state['coo']))
   }
 
   handleChange(event) {
     const value = event.target.value
     const name = event.target.name
-    this.state['value'][name] = value
+    this.state[name] = value
     this.updateState()
   }
 
@@ -116,8 +108,6 @@ export class Onboarding extends React.Component<any, {}> {
               console.log('Acccounts now exposed')
               this.state['web3'] = web3
               this.setState(this.state)
-              console.log(this.state)
-              //web3.eth.sendTransaction({/* ... */});
           } catch (error) {
               console.log('User denied account access...')
           }
@@ -137,10 +127,8 @@ export class Onboarding extends React.Component<any, {}> {
   }
 
   setCooAddress = (cooAdress) => {
-    console.log(cooAdress)
-    this.setState({
-      coo: cooAdress
-    })
+    this.state['coo'] = cooAdress
+    this.updateState()
   }
 
   async showKeyId(props) {
@@ -149,7 +137,6 @@ export class Onboarding extends React.Component<any, {}> {
 
   render() {
     const coo_length = this.state['coo'] ? this.state['coo'].length : 0
-    const coo_address = this.state['coo']
 
     var user: User
 
