@@ -164,7 +164,6 @@ export class Onboarding extends React.Component<any, {}> {
 
   render() {
     const coo_length = this.state['value']['coo'] ? this.state['value']['coo'].length : 0
-    const account_address = this.state['value']['account']['address'] ? this.state['value']['account']['address'] : '(Create or unlock an account first)' //this.getSelectedAddress()
     const coo_address = this.state['value']['coo']
     var create_account_button_text = 'Create'
     var create_account_button_class = 'primary'
@@ -209,12 +208,8 @@ export class Onboarding extends React.Component<any, {}> {
           </div>
           <div className='PageBody'>
             <div className="Onboarding">
-              <div>Currently selected address: {account_address}</div>
               <form>
-                <label>
-                  Name:
-                  <input type="text" name="name" value={this.state['value']['name']} placeholder="Your Name" onChange={this.handleChange} />
-                </label>
+                <button className={create_account_button_class} onClick={this.createAccount} disabled={create_account_button_disabled}>{create_account_button_text}</button>
 
                 <label>
                   CoO Address:
@@ -230,19 +225,6 @@ export class Onboarding extends React.Component<any, {}> {
               </form>
 
               <ConfigCreator web3={this.state['web3']} />
-
-              <div className='PageHeader'>
-                <div className='PageTitle'>CoO Account</div>
-              </div>
-
-              <form>
-                <label>
-                  Account Password:
-                  <input type="password" name="password" value={this.state['password']} placeholder={"secret password"} onChange={this.handlePasswordChange} />
-                </label>
-                <button className={create_account_button_class} onClick={this.createAccount} disabled={create_account_button_disabled}>{create_account_button_text}</button>
-                <span>{account_address}</span>
-              </form>
 
               <div className='PageHeader'>
                 <div className='PageTitle'>CoO Contracts</div>
