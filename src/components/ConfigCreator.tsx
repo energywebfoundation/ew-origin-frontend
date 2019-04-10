@@ -1,6 +1,14 @@
 import * as React from 'react'
+const Web3 = require('web3')
 
-export class ConfigCreator extends React.Component {
+
+export interface ConfigCreatorProps {
+
+    web3
+
+  }
+
+export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
   
     constructor(props) {
         super(props)
@@ -35,6 +43,8 @@ export class ConfigCreator extends React.Component {
     }
 
     createAccount() {
+        const account = this.props.web3.eth.accounts.create()
+        console.log(account)
         return {
             firstName: null,
             surname: null,
@@ -161,25 +171,40 @@ export class ConfigCreator extends React.Component {
         )
     }
 
+    renderCreation() {
+        return (
+            <div>
+                <form onSubmit={this.handleSubmit}>
+                <label>
+                Choose type to create:
+                <select value={this.state['value']} onChange={this.handleChange}>
+                    <option value="CREATE_ACCOUNT">Account</option>
+                    <option value="CREATE_PRODUCING_ASSET">Producing Asset</option>
+                    {/*<option value="CREATE_CONSUMING_ASSET">Consuming Asset</option>*/}
+                </select>
+                </label>
+                <input type="submit" value="Create" />
+                {this.renderForms()}
+                </form>
+                <button className="primary" onClick={this.downloadEWFConfiguration}>Download</button>
+            </div>
+        )
+    }
+
     render() {
         return (
             <div>
             <div className='PageHeader'>
                 <div className='PageTitle'>Config Creator</div>
             </div>
-                <form onSubmit={this.handleSubmit}>
-                    <label>
-                    Choose type to create:
-                    <select value={this.state['value']} onChange={this.handleChange}>
-                        <option value="CREATE_ACCOUNT">Account</option>
-                        <option value="CREATE_PRODUCING_ASSET">Producing Asset</option>
-                        {/*<option value="CREATE_CONSUMING_ASSET">Consuming Asset</option>*/}
-                    </select>
-                    </label>
-                    <input type="submit" value="Create" />
-                    {this.renderForms()}
-                </form>
-                <button className="primary" onClick={this.downloadEWFConfiguration}>Download</button>
+            {
+                this.props.web3 ?
+                this.renderCreation()
+                :
+                <div>
+                    You need to install and unlock Metamask first.
+                </div>
+            }
             </div>
         )
     }

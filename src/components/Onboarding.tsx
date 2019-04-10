@@ -229,7 +229,7 @@ export class Onboarding extends React.Component<any, {}> {
                 </label>
               </form>
 
-              <ConfigCreator />
+              <ConfigCreator web3={this.state['web3']} />
 
               <div className='PageHeader'>
                 <div className='PageTitle'>CoO Account</div>
