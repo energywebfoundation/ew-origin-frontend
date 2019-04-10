@@ -108,8 +108,8 @@ export class ConfigCreator extends React.Component {
                 return this.createAccount()
             case 'CREATE_PRODUCING_ASSET':
                 return this.createProducingAsset()
-            case 'CREATE_CONSUMING_ASSET':
-                return this.createConsumingAsset()
+            //case 'CREATE_CONSUMING_ASSET':
+            //    return this.createConsumingAsset()
             default:
                 throw('Your\'re adding type: ' + this.state['value'] + ' which is not supported.')
         }
@@ -173,7 +173,7 @@ export class ConfigCreator extends React.Component {
                     <select value={this.state['value']} onChange={this.handleChange}>
                         <option value="CREATE_ACCOUNT">Account</option>
                         <option value="CREATE_PRODUCING_ASSET">Producing Asset</option>
-                        <option value="CREATE_CONSUMING_ASSET">Consuming Asset</option>
+                        {/*<option value="CREATE_CONSUMING_ASSET">Consuming Asset</option>*/}
                     </select>
                     </label>
                     <input type="submit" value="Create" />
