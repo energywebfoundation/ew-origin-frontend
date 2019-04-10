@@ -39,14 +39,14 @@ export class Onboarding extends React.Component<any, {}> {
       value: value,
       web3: null,
       password: null,
-      unlocked: false
+      unlocked: false,
+      coo: null
     }
 
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.createAccount = this.createAccount.bind(this)
     this.handlePasswordChange = this.handlePasswordChange.bind(this)
-    this.deployContract = this.deployContract.bind(this)
     this.clearLocalStorage = this.clearLocalStorage.bind(this)
   }
 
@@ -102,28 +102,6 @@ export class Onboarding extends React.Component<any, {}> {
     })
   }
 
-  deployContract() {
-    event.preventDefault()
-    this.setState({
-      deploy: true
-    })
-    console.log('Deploying CoO contracts, this takes a while.')
-    fetch('http://localhost:3003/coo', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }).then(res => {
-      res.json().then(data => {
-        this.state['value']['coo'] = data['coo']
-        this.state['deploy'] = false
-        this.setState(this.state)
-        this.updateState()
-      })
-    })
-  }
-
   async componentDidMount() {
     await this.showKeyId(this.props)
 
@@ -158,42 +136,20 @@ export class Onboarding extends React.Component<any, {}> {
     }
   }
 
+  setCooAddress = (cooAdress) => {
+    console.log(cooAdress)
+    this.setState({
+      coo: cooAdress
+    })
+  }
+
   async showKeyId(props) {
     console.log(props.web3Service)
   }
 
   render() {
-    const coo_length = this.state['value']['coo'] ? this.state['value']['coo'].length : 0
-    const coo_address = this.state['value']['coo']
-    var create_account_button_text = 'Create'
-    var create_account_button_class = 'primary'
-    var create_account_button_disabled = false
-    if (this.state['value']['account']['address']) {
-      if (this.state['unlocked']) {
-        create_account_button_disabled = true
-        create_account_button_text = 'Unlocked'
-        create_account_button_class = 'disabled'
-      } else {
-        create_account_button_text = 'Unlock'
-        create_account_button_class = 'secondary'
-      }
-    }
-
-    var deploy_button_text = 'Deploy'
-    var deploy_button_class = 'primary'
-    var deploy_button_disabled = false
-
-    if (coo_address) {
-      deploy_button_text = 'Deployed'
-      var deploy_button_class = 'disabled'
-      var deploy_button_disabled = true
-    }
-
-    if (this.state['deploy']) {
-      deploy_button_text = 'Deploying..'
-      var deploy_button_class = 'disabled'
-      var deploy_button_disabled = true
-    }
+    const coo_length = this.state['coo'] ? this.state['coo'].length : 0
+    const coo_address = this.state['coo']
 
     var user: User
 
@@ -209,31 +165,21 @@ export class Onboarding extends React.Component<any, {}> {
           <div className='PageBody'>
             <div className="Onboarding">
               <form>
-                <button className={create_account_button_class} onClick={this.createAccount} disabled={create_account_button_disabled}>{create_account_button_text}</button>
 
                 <label>
                   CoO Address:
-                  <input type="text" name="coo" size={42} value={this.state['value']['coo']} placeholder="0x00..." onChange={this.handleChange} />
+                  <input type="text" name="coo" size={42} value={this.state['coo']} placeholder="0x00..." onChange={this.handleChange} />
                   {
                     coo_length == 42
                     ?
-                      <a href={this.state['value']['coo']}>Open</a>
+                      <a href={this.state['coo']}>Open</a>
                     :
                       <span>0x + 40 characters</span>
                   }
                 </label>
               </form>
 
-              <ConfigCreator web3={this.state['web3']} />
-
-              <div className='PageHeader'>
-                <div className='PageTitle'>CoO Contracts</div>
-              </div>
-
-              <form>
-                <button className={deploy_button_class} onClick={this.deployContract} disabled={deploy_button_disabled}>{deploy_button_text}</button>
-                <span>{coo_address}</span>
-              </form>
+              <ConfigCreator web3={this.state['web3']} callbackSetCooAddress={this.setCooAddress} />
 
               <div className='PageHeader'>
                 <div className='PageTitle'>Dev</div>

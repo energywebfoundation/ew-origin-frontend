@@ -5,6 +5,7 @@ const Web3 = require('web3')
 export interface ConfigCreatorProps {
 
     web3
+    callbackSetCooAddress
 
   }
 
@@ -15,6 +16,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
 
         this.state = {
             value: 'CREATE_ACCOUNT',
+            coo: null,
             config: {
                 topAdminPrivateKey: null,
                 matcherPrivateKey: null,
@@ -23,6 +25,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         }
 
         this.downloadEWFConfiguration = this.downloadEWFConfiguration.bind(this)
+        this.deployEWFConfiguration = this.deployEWFConfiguration.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.renderForms = this.renderForms.bind(this)
@@ -36,6 +39,26 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         element.download = "config.json"
         document.body.appendChild(element)
         element.click()
+    }
+
+    deployEWFConfiguration() {
+        event.preventDefault()
+        this.setState({
+            deploy: true
+        })
+        console.log('Deploying CoO contracts, this takes a while.')
+        fetch('http://localhost:3003/coo', {
+            method: 'POST',
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({config: this.state['config']})
+        }).then(res => {
+            res.json().then(data => {
+                this.props.callbackSetCooAddress(data['coo'])
+            })
+        })
     }
 
     handleChange(event) {
@@ -137,7 +160,8 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         const type = this.state['value']
         if (['topAdminPrivateKey', 'matcherPrivateKey'].includes(type)) {
             const { address: address, privateKey: privateKey } = this.getNewWeb3Account()
-            this.state['config'][type] = privateKey
+            // config expects keys NOT to start with 0x
+            this.state['config'][type] = privateKey.slice(2)
         } else {
             this.state['config']['flow'].push({
                 type: type,
@@ -222,7 +246,8 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
                 <button className="primary" onClick={this.handleSubmit}>Create</button>
                 {this.renderForms()}
                 </form>
-                <button className="primary" onClick={this.downloadEWFConfiguration}>Download</button>
+                <button className="secondary" onClick={this.downloadEWFConfiguration}>Download</button>
+                <button className="primary" onClick={this.deployEWFConfiguration}>Deploy</button>
             </div>
         )
     }
