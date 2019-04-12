@@ -34,14 +34,13 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
 
     toggleStation() {
         event.preventDefault()
-        if (this.state['working']) {
+        if (this.state['working'] || this.stationIsLocked()) {
             return
         }
         this.setState({
             working: true
         })
-        var command = this.stationIsCharging() ? 'stop_transaction' : 'start_transaction'
-        command = this.stationIsLocked() ? 'unlock_connector' : command
+        const command = this.stationIsCharging() ? 'stop_transaction' : 'start_transaction'
         const post_data = {
             command: command,
             cs_id: this.props.serialNumber,
@@ -70,12 +69,14 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
     }
 
     stationIsLocked() {
-        return this.props.lastStatus == 'locked'
+        const lockedStatus = ['Starting', 'Available', 'Finishing']
+        return lockedStatus.indexOf(this.props.lastStatus) > -1
     }
 
     stationIsCharging() {
         // todo: add real names for on status
-        const onStatus = ['Starting', 'Charging']
+        const onStatus = ['Preparing']
+        // Starting, Available, Finishing turn off button
         return onStatus.indexOf(this.props.lastStatus) > -1
     }
 
@@ -85,14 +86,15 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
         if (this.stationIsCharging()) {
             buttonText = "Off"
         }
-        if (this.stationIsLocked()) {
-            buttonText = "Locked"
-        }
         if (this.state['working']) {
             buttonText = "Turning " + buttonText + "..."
             buttonClass = "disabled"
         } else {
             buttonText = "Turn " + buttonText
+        }
+        if (this.stationIsLocked()) {
+            buttonText = "Locked"
+            buttonClass = "disabled"
         }
         return (
             <div className="AllAssets">
