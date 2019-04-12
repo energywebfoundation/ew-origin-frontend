@@ -140,6 +140,8 @@ services:
   # API Server backend
   ew-origin:
     build: ../ew-helper-demo
+    ports:
+      - 3003:3003
     restart: always
     environment:
       NODE_ENV: production
