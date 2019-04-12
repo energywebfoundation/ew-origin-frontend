@@ -38,7 +38,7 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
             return
         }
         this.setState({
-            working: false
+            working: true
         })
         var command = this.stationIsCharging() ? 'stop_transaction' : 'start_transaction'
         command = this.stationIsLocked() ? 'unlock_connector' : command
@@ -209,18 +209,6 @@ export class AllAssetsView extends React.Component<AllAssetsViewProps, {}> {
             </TopBar>
             <LayoutBody>
                 <LayoutResults>
-                <ActionBar>
-        
-                    <ActionBarRow>
-                    <HitsStats />
-                    </ActionBarRow>
-        
-                    <ActionBarRow>
-                    <SelectedFilters />
-                    <ResetFilters />
-                    </ActionBarRow>
-        
-                </ActionBar>
                 <Hits mod="sk-hits-list" hitsPerPage={50} listComponent={<AssetHitsTable selectedAddress={this.getSelectedAddress()} />}/>
                 <NoHits />
                 </LayoutResults>
