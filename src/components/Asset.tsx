@@ -121,6 +121,7 @@ export class Asset extends React.Component<AssetProps, AssetState> {
     AllAssetsView() {
         return <AllAssetsView
             baseUrl={this.props.baseUrl}
+            web3Service={this.props.web3Service}
         />
     }
 

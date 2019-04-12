@@ -1,6 +1,7 @@
 
 import Web3Type from '../types/web3'
 import { CoOTruffleBuild, AssetProducingLogicTruffleBuild, DemandLogicTruffleBuild, CertificateLogicTruffleBuild, AssetConsumingLogicTruffleBuild, UserLogicTruffleBuild, BlockchainProperties } from 'ewf-coo'
+import { web3ServiceUpdated } from '../actions';
 
 // tslint:disable-next-line:no-var-requires
 const Web3 = require('web3')
@@ -13,7 +14,7 @@ export class Web3Service {
 
     constructor(cooContractAddress: string) {
         // tslint:disable-next-line:no-string-literal
-        this.web3 = new Web3(Web3.givenProvider || 'http://localhost:8545')
+        this.web3 = new Web3(window['ethereum'])
         this.cooContractAddress = cooContractAddress
     }
 

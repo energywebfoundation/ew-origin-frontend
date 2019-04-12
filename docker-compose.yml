@@ -21,8 +21,6 @@ services:
     environment:
       POSTGRES_USER: kong
       POSTGRES_DB: kong
-    ports:
-      - "5432:5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "kong"]
       interval: 5s
@@ -122,6 +120,8 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.7.0
+    ports:
+      - 9200:9200
     environment:
       - "http.cors.enabled=true"
 # Set multiple allowed hosts, for es this need to be done with a regex
@@ -143,7 +143,5 @@ services:
     restart: always
     environment:
       NODE_ENV: production
-    ports:
-      - 3003:3003
     links:
       - blockchain

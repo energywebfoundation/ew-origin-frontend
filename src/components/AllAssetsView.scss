@@ -1,0 +1,70 @@
+//$primary-highlight-color: rgb(119, 77, 161);
+$primary-highlight-color: rgb(12, 130, 146);
+
+.PageWrapper {
+  .PageContentWrapper {
+    .PageBody {
+      .AllAssets {
+        form {
+          label {
+            input, input:focus {
+              background: transparent;
+              color: #fff;
+              border: none;
+              outline: none;
+              border-bottom: 1px solid #fff;
+              padding-left: .2em;
+              margin-left: .2em;
+              margin-right: .5em;
+            }
+            input:focus::placeholder {
+              color: transparent;
+            }
+            input:focus {
+              border-bottom-color: $primary-highlight-color;
+            }
+            input:disabled {
+              border-bottom: 1px dotted rgb(201, 201, 201);
+            }
+          }
+        }
+
+        button {
+          border: none;
+          outline: none;
+          box-shadow: none;
+          padding: .4em;
+          margin: 0 1em 0 0;
+          width: 10em;
+        }
+        button.right {
+          float: right;
+        }
+        button:hover {
+          cursor: pointer;
+        }
+        button.primary {
+          background-color: $primary-highlight-color;
+          color: #fff;
+        }
+        button.disabled:hover {
+          cursor: default;
+        }
+        button.secondary {
+          background-color: #fff;
+          color: $primary-highlight-color;
+          box-shadow: inset 0 0 0 4px $primary-highlight-color;
+        }
+        button.icon {
+          width: 1em;
+          background-color: transparent;
+          color: #fff;
+          box-shadow: none;
+          i {
+            font-size: 20px;
+          }
+        }
+      }
+    }
+  }
+}

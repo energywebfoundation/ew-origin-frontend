@@ -18,6 +18,7 @@
 import * as React from 'react'
 import { Header } from './Header'
 import { ConfigCreator } from './ConfigCreator'
+import { DeviceCreator } from './DeviceCreator'
 import { User } from 'ewf-coo'
 
 import './Onboarding.scss'
@@ -167,6 +168,8 @@ export class Onboarding extends React.Component<any, {}> {
               </form>
 
               <ConfigCreator web3={this.state['web3']} callbackSetCooAddress={this.setCooAddress} />
+
+              <DeviceCreator />
 
               <div className='PageHeader'>
                 <div className='PageTitle'>Dev</div>
