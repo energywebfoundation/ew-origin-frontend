@@ -45,7 +45,7 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
         const post_data = {
             command: command,
             cs_id: this.props.serialNumber,
-            tag_id: this.props.selectedAddress,
+            tag_id: 1, //this.props.selectedAddress,
             received: false
         }
         const device_address = 'http://' + HOST + ':' + PORT + '/control'
