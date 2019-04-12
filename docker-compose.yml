@@ -106,6 +106,8 @@ services:
       - '-l 80000000'
       - '-e 1000000'
       - '-a 20'
+    networks:
+      - kong-net
 
   # Our Frontend
   ew-origin-frontend:
@@ -134,8 +136,6 @@ services:
     restart: always
     networks:
       - kong-net
-    links:
-      - ew-origin-frontend
 
   # API Server backend
   ew-origin:
@@ -148,3 +148,5 @@ services:
     links:
       - blockchain
       - elasticsearch
+    networks:
+      - kong-net
