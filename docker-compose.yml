@@ -147,3 +147,4 @@ services:
       NODE_ENV: production
     links:
       - blockchain
+      - elasticsearch
