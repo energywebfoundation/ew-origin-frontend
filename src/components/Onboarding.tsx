@@ -79,7 +79,7 @@ export class Onboarding extends React.Component<any, {}> {
   createAccount(event) {
     event.preventDefault()
     console.log('creating account on the server with password', this.state['password'])
-    fetch('http://localhost:3003/account', {
+    fetch('http://ew-origin:3003/account', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

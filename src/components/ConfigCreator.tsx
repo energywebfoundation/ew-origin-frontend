@@ -60,7 +60,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
             deploying: true
         })
         console.log('Deploying CoO contracts, this takes a while.')
-        fetch('http://localhost:3003/coo', {
+        fetch('http://ew-origin:3003/coo', {
             method: 'POST',
             headers: {
             'Accept': 'application/json',

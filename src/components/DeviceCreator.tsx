@@ -18,8 +18,8 @@
 import * as React from 'react'
   
 // it's always the same ip and port since we're connected to the local ap of the device
-//const device_address = 'http://10.42.0.1:8000/8000'
-const device_address = 'http://127.0.0.1:8000/8000'
+const device_address = 'http://10.42.0.1:8000/8000'
+//const device_address = 'http://127.0.0.1:8000/8000'
 
 export class DeviceCreator extends React.Component<any, {}> {
     constructor(props) {
