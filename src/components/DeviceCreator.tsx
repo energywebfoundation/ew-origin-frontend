@@ -64,8 +64,13 @@ export class DeviceCreator extends React.Component<any, {}> {
                 "class_parameters": {
                     "asset_id": parseInt(asset_id),
                     "wallet_add": address,
-                    "wallet_pwd": pk,
-                    "client_url": "https://rpc.slock.it/tobalaba"
+                    "wallet_pwd": pk, // no 0x
+                    "client_url": "https://rpc.slock.it/tobalaba",
+                    "addresses": {
+                        "producer": {
+                            "address": this.props.producing
+                        }
+                    }
                 }
             }
         }
@@ -93,17 +98,11 @@ export class DeviceCreator extends React.Component<any, {}> {
             "consumers": [],
             "producers": producers,
             "ocpp16-server": {
-                "host": "127.0.0.1",
+                "host": "0.0.0.0",
                 "port": 8080
             },
             "elastic-sync": {
                 "service_urls": ["http://es-kong", "http://0.0.0.0:9200"]
-            },
-            "iot-layer": {
-                "client_url": "https://rpc.slock.it/tobalaba",
-                "wallet_add": "0x16bC9F8a9bE6296F3D4C87Dcd866726593662B3f",
-                "wallet_pwd": "0x54f4f12baa6d986e052420e5c1e69274475e73cd450acaafb97cbc53094887cf",
-                "device_id": "10901454d4800007340d2"
             }
         }
 

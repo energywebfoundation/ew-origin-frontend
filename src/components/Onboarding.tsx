@@ -127,8 +127,9 @@ export class Onboarding extends React.Component<any, {}> {
     }
   }
 
-  setCooAddress = (cooAdress) => {
-    this.state['coo'] = cooAdress
+  setAddresses = (address) => {
+    this.state['coo'] = address['coo']
+    this.state['producing'] = address['producingAssetLogic']
     this.updateState()
   }
 
@@ -173,9 +174,9 @@ export class Onboarding extends React.Component<any, {}> {
                 </label>
               </form>
 
-              <ConfigCreator web3={this.state['web3']} callbackSetCooAddress={this.setCooAddress} callbackSetProducingAssets={this.setProducingAsset} />
+              <ConfigCreator web3={this.state['web3']} callbackSetAddresses={this.setAddresses} callbackSetProducingAssets={this.setProducingAsset} />
 
-              <DeviceCreator coo={this.state['coo']} assets={this.state['assets']} />
+              <DeviceCreator coo={this.state['coo']} producing={this.state['producing']} assets={this.state['assets']} />
 
               <div className='PageHeader'>
                 <div className='PageTitle'>Dev</div>

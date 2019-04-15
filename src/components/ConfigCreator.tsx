@@ -5,7 +5,7 @@ const localStorageKey = "ConfigCreator"
 export interface ConfigCreatorProps {
 
     web3
-    callbackSetCooAddress
+    callbackSetAddresses
     callbackSetProducingAssets
 
   }
@@ -78,7 +78,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
                 this.setState({
                     deploying: false
                 })
-                this.props.callbackSetCooAddress(data['coo'])
+                this.props.callbackSetAddresses(JSON.parse(data))
             })
         })
     }
