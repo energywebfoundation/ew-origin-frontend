@@ -132,6 +132,12 @@ export class Onboarding extends React.Component<any, {}> {
     this.updateState()
   }
 
+  setProducingAsset = (assets) => {
+    console.log(assets)
+    this.state['assets'] = assets
+    this.updateState()
+  }
+
   async showKeyId(props) {
     console.log(props.web3Service)
   }
@@ -167,9 +173,9 @@ export class Onboarding extends React.Component<any, {}> {
                 </label>
               </form>
 
-              <ConfigCreator web3={this.state['web3']} callbackSetCooAddress={this.setCooAddress} />
+              <ConfigCreator web3={this.state['web3']} callbackSetCooAddress={this.setCooAddress} callbackSetProducingAssets={this.setProducingAsset} />
 
-              <DeviceCreator />
+              <DeviceCreator coo={this.state['coo']} assets={this.state['assets']} />
 
               <div className='PageHeader'>
                 <div className='PageTitle'>Dev</div>

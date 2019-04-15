@@ -6,6 +6,7 @@ export interface ConfigCreatorProps {
 
     web3
     callbackSetCooAddress
+    callbackSetProducingAssets
 
   }
 
@@ -36,9 +37,14 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         this.handleDeviceChange = this.handleDeviceChange.bind(this)
     }
 
+    componentDidMount() {
+        this.props.callbackSetProducingAssets(this.state['config']['flow'])
+    }
+
     updateState() {
         this.setState(this.state)
         localStorage.setItem(localStorageKey, JSON.stringify(this.state['config']))
+        this.props.callbackSetProducingAssets(this.state['config']['flow'])
     }
 
     downloadEWFConfiguration() {
@@ -135,37 +141,12 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         }
     }
 
-    createConsumingAsset() {
-        return {
-            smartMeter: null,
-            smartMeterPK: null,
-            owner: null,
-            operationalSince: null,
-            capacityWh: null,
-            lastSmartMeterReadWh: null,
-            active: null,
-            lastSmartMeterReadFileHash: null,
-            country: null,
-            region: null,
-            zip: null,
-            city: null,
-            street: null,
-            houseNumber: null,
-            gpsLatitude: null,
-            gpsLongitude: null,
-            maxCapacitySet: null,
-            certificatesUsedForWh: null
-        }
-    }
-
     getDataForType(type) {
         switch(type) {
             case 'CREATE_ACCOUNT':
                 return this.createAccount()
             case 'CREATE_PRODUCING_ASSET':
                 return this.createProducingAsset()
-            //case 'CREATE_CONSUMING_ASSET':
-            //    return this.createConsumingAsset()
             default:
                 throw('Your\'re adding type: ' + type + ' which is not supported.')
         }

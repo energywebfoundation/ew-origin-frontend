@@ -32,6 +32,45 @@ export class DeviceCreator extends React.Component<any, {}> {
         this.sendConfigToDevice = this.sendConfigToDevice.bind(this)
     }
 
+    producer(asset_id, address, pk) {
+        return {
+            "name": "ChargingPoint0901454d4800007340d2",
+            "energy-meter": {
+            "module": "tasks.chargepoint",
+            "class_name": "EVchargerEnergyMeter",
+                "class_parameters": {
+                "service_urls": ["http://es-kong", "http://0.0.0.0:9200"],
+                    "manufacturer":"Ebee",
+                    "model":"EV-Charge Point Energy Meter",
+                    "serial_number":"10901454d4800007340d2",
+                    "energy_unit":"WATT_HOUR",
+                    "is_accumulated": false,
+                    "connector_id": 0
+                }
+            },
+            "carbon-emission": {
+                "module": "energyweb.carbonemission",
+                "class_name": "WattimeV1",
+                "class_parameters": {
+                    "usr": "energyweb",
+                    "pwd": "en3rgy!web",
+                    "ba": "FR",
+                    "hours_from_now": 24
+                }
+            },
+            "smart-contract": {
+            "module": "energyweb.smart_contract.origin_v1",
+            "class_name": "OriginProducer",
+                "class_parameters": {
+                    "asset_id": parseInt(asset_id),
+                    "wallet_add": address,
+                    "wallet_pwd": pk,
+                    "client_url": "https://rpc.slock.it/tobalaba"
+                }
+            }
+        }
+    }
+
     sendConfigToDevice() {
         event.preventDefault()
         console.log('Posting device config to device')
@@ -39,47 +78,20 @@ export class DeviceCreator extends React.Component<any, {}> {
             device: 'working'
         })
 
+        var producers = []
+        for (var asset_key in this.props.assets) {
+            var asset = this.props.assets[asset_key]
+            if (asset['type'] == 'CREATE_PRODUCING_ASSET') {
+                console.log(asset['data'])
+                var address = asset['data']['smartMeter']
+                var pk = asset['data']['smartMeterPK']
+                producers.push(this.producer(asset_key, address, pk))
+            }
+        }
+
         const config = {
-            "consumers": [
-            ],
-            "producers": [
-                {
-                "name": "ChargingPoint0901454d4800007340d2",
-                "energy-meter": {
-                "module": "tasks.chargepoint",
-                "class_name": "EVchargerEnergyMeter",
-                    "class_parameters": {
-                    "service_urls": ["http://es-kong", "http://0.0.0.0:9200"],
-                        "manufacturer":"Ebee",
-                        "model":"EV-Charge Point Energy Meter",
-                        "serial_number":"10901454d4800007340d2",
-                        "energy_unit":"WATT_HOUR",
-                        "is_accumulated": false,
-                        "connector_id": 0
-                    }
-                },
-                    "carbon-emission": {
-                        "module": "energyweb.carbonemission",
-                        "class_name": "WattimeV1",
-                        "class_parameters": {
-                        "usr": "energyweb",
-                        "pwd": "en3rgy!web",
-                        "ba": "FR",
-                        "hours_from_now": 24
-                    }
-                },
-                    "smart-contract": {
-                    "module": "energyweb.smart_contract.origin_v1",
-                    "class_name": "OriginProducer",
-                        "class_parameters": {
-                        "asset_id": 2,
-                        "wallet_add": "0x4A616994A229565f7f7E96161eFd78b780bf24e2",
-                        "wallet_pwd": "1b17e7cb5879a18fb6c9e7aee03a66841f2aa10102bd537752ecbdb5b6252d2f",
-                        "client_url": "https://rpc.slock.it/tobalaba"
-                        }
-                    }
-                }
-            ],
+            "consumers": [],
+            "producers": producers,
             "ocpp16-server": {
                 "host": "127.0.0.1",
                 "port": 8080
@@ -94,6 +106,8 @@ export class DeviceCreator extends React.Component<any, {}> {
                 "device_id": "10901454d4800007340d2"
             }
         }
+
+        console.log(config)
 
         fetch(device_address, {
             method: 'POST',
