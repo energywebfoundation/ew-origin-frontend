@@ -37,10 +37,12 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
         if (this.state['working'] || this.stationIsLocked()) {
             return
         }
-        this.setState({
-            working: true
-        })
         const command = this.stationIsCharging() ? 'stop_transaction' : 'start_transaction'
+        const expected = this.stationIsCharging() ? 'Preparing' : 'Charging'
+        this.setState({
+            working: true,
+            expected: expected
+        })
         const post_data = {
             command: command,
             cs_id: this.props.serialNumber,
@@ -69,14 +71,16 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
     }
 
     stationIsLocked() {
-        const lockedStatus = ['Starting', 'Available', 'Finishing']
-        return lockedStatus.indexOf(this.props.lastStatus) > -1
+        if (this.state['expected']) {
+            return this.props.lastStatus != this.state['expected']
+        } else {
+            const lockedStatus = ['Starting', 'Available', 'Finishing']
+            return lockedStatus.indexOf(this.props.lastStatus) > -1
+        }
     }
 
     stationIsCharging() {
-        // todo: add real names for on status
-        const onStatus = ['Preparing']
-        // Starting, Available, Finishing turn off button
+        const onStatus = ['Charging', 'Preparing']
         return onStatus.indexOf(this.props.lastStatus) > -1
     }
 
@@ -91,10 +95,10 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
             buttonClass = "disabled"
         } else {
             buttonText = "Turn " + buttonText
-        }
-        if (this.stationIsLocked()) {
-            buttonText = "Locked"
-            buttonClass = "disabled"
+            if (this.stationIsLocked()) {
+                buttonText = "Locked"
+                buttonClass = "disabled"
+            }
         }
         return (
             <div className="AllAssets">
@@ -110,7 +114,7 @@ class AssetHitsTable extends React.Component<any, {}> {
     constructor(props) {
         super(props)
 
-        setInterval(() => searchkit.reloadSearch(), 1000)
+        setInterval(() => searchkit.reloadSearch(), 5000)
     }
 
     render() {
