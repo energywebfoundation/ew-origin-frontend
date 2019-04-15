@@ -30,6 +30,8 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
         }
     
         this.toggleStation = this.toggleStation.bind(this)
+        this.unlockStation = this.unlockStation.bind(this)
+        this.showUnlockButton = this.showUnlockButton.bind(this)
     }
 
     toggleStation() {
@@ -38,7 +40,7 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
             return
         }
         const command = this.stationIsCharging() ? 'stop_transaction' : 'start_transaction'
-        const expected = this.stationIsCharging() ? 'Preparing' : 'Charging'
+        const expected = this.stationIsCharging() ? 'Finishing' : 'Charging'
         this.setState({
             working: true,
             expected: expected
@@ -70,17 +72,60 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
         })
     }
 
+    unlockStation() {
+        event.preventDefault()
+        if (this.state['working'] || this.stationIsLocked()) {
+            return
+        }
+        const command = 'unlock_connector'
+        const expected = 'Available'
+        this.setState({
+            working: true,
+            expected: expected
+        })
+        const post_data = {
+            command: command,
+            cs_id: this.props.serialNumber,
+            tag_id: 1, //this.props.selectedAddress,
+            received: false
+        }
+        const device_address = 'http://' + HOST + ':' + PORT + '/control'
+        fetch(device_address, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(post_data)
+        }).then(res => {
+            res.json().then(data => {
+                this.setState({
+                    working: false
+                })
+                // refresh the es data
+                //searchkit.reloadSearch()
+                // refresh again in case the data was not updated in the previous response yet
+                //setTimeout(() => searchkit.reloadSearch(), 1000)
+            })
+        })
+    }
+
+    showUnlockButton() {
+        return ((this.props.lastStatus == "Finishing" || this.props.lastStatus == "Preparing") && !this.stationIsLocked())
+    }
+
     stationIsLocked() {
         if (this.state['expected']) {
             return this.props.lastStatus != this.state['expected']
         } else {
-            const lockedStatus = ['Starting', 'Available', 'Finishing']
+            const lockedStatus = ['Starting', 'Available']
             return lockedStatus.indexOf(this.props.lastStatus) > -1
         }
+        //unlock_connector
     }
 
     stationIsCharging() {
-        const onStatus = ['Charging', 'Preparing']
+        const onStatus = ['Charging']
         return onStatus.indexOf(this.props.lastStatus) > -1
     }
 
@@ -104,6 +149,12 @@ class ControlButton extends React.Component<ControlButtonProps, {}> {
             <div className="AllAssets">
                 <form>
                     <button onClick={this.toggleStation} className={buttonClass}>{buttonText}</button>
+                    {
+                        (this.showUnlockButton()) ?
+                        <button onClick={this.unlockStation} className="secondary">Unlock</button>
+                        :
+                        null
+                    }
                 </form>
             </div>
         )
@@ -141,7 +192,7 @@ class AssetHitsTable extends React.Component<any, {}> {
                                 lastStatus={hit._source.connectors[CONNECTOR_ID].last_status}
                                 serialNumber={hit._source.metadata.meterSerialNumber}
                                 selectedAddress={this.props.selectedAddress} />
-                            </td>
+                        </td>
                     </tr>
                     )
                 }
