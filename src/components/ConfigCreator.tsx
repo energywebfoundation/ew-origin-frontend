@@ -168,9 +168,23 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         this.updateState()
     }
 
+    isIntType(name) {
+        const intTypes = ['operationalSince', 'capacityWh', 'lastSmartMeterReadWh', 'lastSmartMeterCO2OffsetRead', 'certificatesCreatedForWh', 'lastSmartMeterCO2OffsetRead', 'cO2UsedForCertificate']
+        return intTypes.indexOf(name) > -1
+    }
+
+    convertType(name, value) {
+        if (this.isIntType(name)) {
+            const intValue = parseInt(value)
+            return isNaN(intValue) ? 0 : intValue
+        }
+        return value
+    }
+
     handleDeviceChange(event, key) {
-        const value = event.target.value
         const name = event.target.name
+        const value = this.convertType(event.target.name, event.target.value)
+
         this.state['config']['flow'][key]['data'][name] = value
         this.updateState()
     }
