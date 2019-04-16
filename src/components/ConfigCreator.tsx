@@ -108,7 +108,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
             state: null,
             address: address,
             privateKey: privateKey,
-            rights: null
+            rights: 16
         }
     }
 
@@ -121,7 +121,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
             operationalSince: null,
             capacityWh: null,
             lastSmartMeterReadWh: null,
-            active: null,
+            active: true,
             lastSmartMeterReadFileHash: null,
             country: null,
             region: null,
@@ -131,7 +131,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
             houseNumber: null,
             gpsLatitude: null,
             gpsLongitude: null,
-            assetType: null,
+            assetType: "RunRiverHydro",
             certificatesCreatedForWh: null,
             lastSmartMeterCO2OffsetRead: null,
             cO2UsedForCertificate: null,

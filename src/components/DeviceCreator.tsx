@@ -18,8 +18,8 @@
 import * as React from 'react'
   
 // it's always the same ip and port since we're connected to the local ap of the device
-const device_address = 'http://10.42.0.1:8000/8000'
-//const device_address = 'http://127.0.0.1:8000/8000'
+const device_address = 'http://10.42.0.1:8060/config'
+//const device_address = 'http://127.0.0.1:8000/'
 
 export class DeviceCreator extends React.Component<any, {}> {
     constructor(props) {
@@ -34,7 +34,7 @@ export class DeviceCreator extends React.Component<any, {}> {
 
     producer(asset_id, address, pk) {
         return {
-            "name": "ChargingPoint0901454d4800007340d2",
+            "name": "ChargingPoint",
             "energy-meter": {
             "module": "tasks.chargepoint",
             "class_name": "EVchargerEnergyMeter",
@@ -42,10 +42,10 @@ export class DeviceCreator extends React.Component<any, {}> {
                 "service_urls": ["http://es-kong", "http://0.0.0.0:9200"],
                     "manufacturer":"Ebee",
                     "model":"EV-Charge Point Energy Meter",
-                    "serial_number":"10901454d4800007340d2",
+                    "serial_number":"0901454d4800007340d2",
                     "energy_unit":"WATT_HOUR",
                     "is_accumulated": false,
-                    "connector_id": 0
+                    "connector_id": 1
                 }
             },
             "carbon-emission": {
@@ -128,9 +128,9 @@ export class DeviceCreator extends React.Component<any, {}> {
         return (
             <div>
             <div className='PageHeader'>
-                <div className='PageTitle'>Device Creator</div>
+                <div className='PageTitle'>Charging Station Configurator</div>
             </div>
-            <button className="primary" onClick={this.sendConfigToDevice}>Create</button>
+            <button className="primary" onClick={this.sendConfigToDevice}>Configure</button>
             </div>
         )
     }
