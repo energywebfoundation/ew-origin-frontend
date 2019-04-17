@@ -26,7 +26,8 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         this.state = {
             value: 'CREATE_ACCOUNT',
             coo: null,
-            config: config
+            config: config,
+            ownerAddress: null
         }
 
         this.downloadEWFConfiguration = this.downloadEWFConfiguration.bind(this)
@@ -96,6 +97,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
 
     createAccount() {
         const { address: address, privateKey: privateKey } = this.getNewWeb3Account()
+        this.state['ownerAddress'] = address
         return {
             firstName: null,
             surname: null,
@@ -117,7 +119,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         return {
             smartMeter: address,
             smartMeterPK: privateKey,
-            owner: null,
+            owner: this.state['ownerAddress'],
             operationalSince: null,
             capacityWh: null,
             lastSmartMeterReadWh: null,
