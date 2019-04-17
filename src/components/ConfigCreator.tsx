@@ -143,12 +143,38 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
         }
     }
 
+    createConsumingAsset() {
+        const { address: address, privateKey: privateKey } = this.getNewWeb3Account()
+        return {
+            smartMeter: address,
+            smartMeterPK: privateKey,
+            owner: this.state['ownerAddress'],
+            operationalSince: null,
+            capacityWh: null,
+            lastSmartMeterReadWh: null,
+            active: null,
+            lastSmartMeterReadFileHash: null,
+            country: null,
+            region: null,
+            zip: null,
+            city: null,
+            street: null,
+            houseNumber: null,
+            gpsLatitude: null,
+            gpsLongitude: null,
+            maxCapacitySet: null,
+            certificatesUsedForWh: null
+        }
+    }
+
     getDataForType(type) {
         switch(type) {
             case 'CREATE_ACCOUNT':
                 return this.createAccount()
             case 'CREATE_PRODUCING_ASSET':
                 return this.createProducingAsset()
+            case 'CREATE_CONSUMING_ASSET':
+                return this.createConsumingAsset()
             default:
                 throw('Your\'re adding type: ' + type + ' which is not supported.')
         }
@@ -255,7 +281,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
                     <option value="matcherPrivateKey">Matcher</option>
                     <option value="CREATE_ACCOUNT">User Account</option>
                     <option value="CREATE_PRODUCING_ASSET">Producing Asset</option>
-                    {/*<option value="CREATE_CONSUMING_ASSET">Consuming Asset</option>*/}
+                    <option value="CREATE_CONSUMING_ASSET">Consuming Asset</option>
                 </select>
                 </label>
                 <button className="primary" onClick={this.handleSubmit}>Create</button>
