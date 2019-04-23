@@ -63,7 +63,7 @@ export class DeviceCreator extends React.Component<any, {}> {
                 "class_parameters": {
                     "asset_id": parseInt(asset_id),
                     "wallet_add": address,
-                    "wallet_pwd": pk, // no 0x
+                    "wallet_pwd": pk.slice(2), // remove 0x at beginning of pk
                     "client_url": "https://rpc.slock.it/tobalaba",
                     "addresses": {
                         "producer": {
