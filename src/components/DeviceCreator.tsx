@@ -107,7 +107,7 @@ export class DeviceCreator extends React.Component<any, {}> {
 
         console.log(config)
 
-        const device_id = this.state['deviceID']
+        const device_id = this.state['device_id']
         const device_address = `http://usn-device-${device_id}.local:8060/config`
         fetch(device_address, {
             method: 'POST',
