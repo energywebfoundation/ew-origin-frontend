@@ -18,8 +18,6 @@
 import * as React from 'react'
   
 // it's always the same ip and port since we're connected to the local ap of the device
-const device_address = 'http://10.42.0.1:8060/config'
-//const device_address = 'http://127.0.0.1:8000/'
 
 export class DeviceCreator extends React.Component<any, {}> {
     constructor(props) {
@@ -30,6 +28,7 @@ export class DeviceCreator extends React.Component<any, {}> {
         }
     
         this.sendConfigToDevice = this.sendConfigToDevice.bind(this)
+        this.handleChange = this.handleChange.bind(this)
     }
 
     producer(asset_id, address, pk) {
@@ -108,6 +107,8 @@ export class DeviceCreator extends React.Component<any, {}> {
 
         console.log(config)
 
+        const device_id = this.state['deviceID']
+        const device_address = `http://usn-device-${device_id}.local:8060/config`
         fetch(device_address, {
             method: 'POST',
             headers: {
@@ -124,13 +125,22 @@ export class DeviceCreator extends React.Component<any, {}> {
         })
     }
 
+    handleChange(event) {
+        this.setState({device_id: event.target.value});
+    }
+
     render() {
         return (
             <div>
             <div className='PageHeader'>
                 <div className='PageTitle'>Charging Station Configurator</div>
             </div>
-            <button className="primary" onClick={this.sendConfigToDevice}>Configure</button>
+            <form>
+                <label>Charging Device ID
+                    <input name="device_id" placeholder="device_id" onChange={this.handleChange} />
+                </label>
+            </form>
+            <button className="primary" onClick={this.sendConfigToDevice} value={this.state['device_id']}>Configure</button>
             </div>
         )
     }

@@ -152,7 +152,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
             operationalSince: null,
             capacityWh: null,
             lastSmartMeterReadWh: null,
-            active: null,
+            active: true,
             lastSmartMeterReadFileHash: null,
             country: null,
             region: null,
@@ -162,7 +162,7 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
             houseNumber: null,
             gpsLatitude: null,
             gpsLongitude: null,
-            maxCapacitySet: null,
+            maxCapacitySet: false,
             certificatesUsedForWh: null
         }
     }
@@ -197,7 +197,14 @@ export class ConfigCreator extends React.Component<ConfigCreatorProps, {}> {
     }
 
     isIntType(name) {
-        const intTypes = ['operationalSince', 'capacityWh', 'lastSmartMeterReadWh', 'lastSmartMeterCO2OffsetRead', 'certificatesCreatedForWh', 'lastSmartMeterCO2OffsetRead', 'cO2UsedForCertificate']
+        const intTypes = ['operationalSince',
+                            'capacityWh',
+                            'lastSmartMeterReadWh',
+                            'lastSmartMeterCO2OffsetRead',
+                            'certificatesCreatedForWh',
+                            'lastSmartMeterCO2OffsetRead',
+                            'cO2UsedForCertificate',
+                            'certificatesUsedForWh']
         return intTypes.indexOf(name) > -1
     }
 
