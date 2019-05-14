@@ -1,5 +1,5 @@
 ### STAGE 1: Build ###
-FROM node:latest as build
+FROM node:11 as build
 RUN mkdir /usr/src/app
 WORKDIR /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
